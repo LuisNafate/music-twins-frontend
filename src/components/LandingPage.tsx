@@ -1,316 +1,331 @@
-// MusicTwins – Landing Page
+'use client'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
 
-const imgWaves = 'http://localhost:3845/assets/27ba77c773249312806f4965c977293ca8fb9d13.svg';
-const imgSpotifyIcon = 'http://localhost:3845/assets/f4933b1ed886d1709dba727108a32af7233dd591.svg';
-const imgPlayIcon = 'http://localhost:3845/assets/ac8795c7a42c2ff90086f00ecdcf4dd84d720d64.svg';
-const imgLogoIcon = 'http://localhost:3845/assets/400aeaa6785302fc616735de510c3eece5dcaef5.svg';
-const imgFeatureSync = 'http://localhost:3845/assets/39ae562604e35e6f02d7a3b46272cc13a0501966.svg';
-const imgFeatureTwin = 'http://localhost:3845/assets/7f1b8776d9b01f0774997bbf26db80246ec74a2c.svg';
-const imgFeatureViz = 'http://localhost:3845/assets/26758d06d46c0dedb8b91515a5477e8c8e51c777.svg';
+export default function LandingPage() {
+  const router = useRouter()
+  const viniloImage = '/assets/cd-disk-iconscout.png'
 
-interface LandingPageProps {
-  onEnterApp?: () => void;
-}
+  const fadeUp = {
+    initial: { opacity: 0, y: 28 },
+    whileInView: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, ease: 'easeOut' },
+    viewport: { once: true, amount: 0.2 },
+  } as const
 
-export default function LandingPage({ onEnterApp }: LandingPageProps) {
+  const stagger = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    },
+  } as const
+
+  const artists = useMemo(
+    () => [
+      { rank: '01', name: 'Radiohead', minutes: '4,820 min', width: '85%', highlight: true },
+      { rank: '02', name: 'Daft Punk', minutes: '3,140 min', width: '60%' },
+      { rank: '03', name: 'Tame Impala', minutes: '2,900 min', width: '45%' },
+    ],
+    []
+  )
+
+  const genres = useMemo(
+    () => [
+      { label: 'SYNTH', value: '42%', color: 'text-cyan-300' },
+      { label: 'LO-FI', value: '28%', color: 'text-rose-300' },
+      { label: 'JAZZ', value: '15%', color: 'text-slate-300' },
+      { label: 'OTHER', value: '15%', color: 'text-slate-300' },
+    ],
+    []
+  )
+
+  const concerts = useMemo(
+    () => [
+      { date: '12 OCT', title: 'Primavera Sound', place: 'Barcelona, ES' },
+      { date: '15 NOV', title: 'Desert Sessions', place: 'Joshua Tree, CA' },
+    ],
+    []
+  )
+
+  const collection = useMemo(
+    () => [
+      { title: 'Random Access Memories', artist: 'Daft Punk', tone: 'from-rose-200/30 to-rose-400/10' },
+      { title: 'In Rainbows', artist: 'Radiohead', tone: 'from-cyan-200/30 to-cyan-400/10' },
+      { title: 'Currents', artist: 'Tame Impala', tone: 'from-slate-200/20 to-slate-500/10' },
+    ],
+    []
+  )
+
   return (
-    <div
-      className="relative w-full"
-      style={{
-        minHeight: '1485px',
-        backgroundImage: `
-          url('data:image/svg+xml;utf8,<svg viewBox="0 0 1280 1485" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%25" width="100%25" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(181.02 0 0 210.01 0 0)"><stop stop-color="rgba(168,85,247,0.15)" offset="0"/><stop stop-color="rgba(168,85,247,0)" offset="0.5"/></radialGradient></defs></svg>'),
-          url('data:image/svg+xml;utf8,<svg viewBox="0 0 1280 1485" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%25" width="100%25" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(181.02 0 0 210.01 1280 1485)"><stop stop-color="rgba(168,85,247,0.1)" offset="0"/><stop stop-color="rgba(168,85,247,0)" offset="0.5"/></radialGradient></defs></svg>'),
-          linear-gradient(90deg, rgb(13,13,15) 0%, rgb(13,13,15) 100%)
-        `,
-      }}
-    >
-      {/* Background Audio Waves */}
-      <div className="absolute inset-0 opacity-20 overflow-hidden pointer-events-none">
-        <div className="absolute left-0 bottom-0 w-full h-[300px]">
-          <img alt="" className="absolute block w-full h-full" src={imgWaves} />
-        </div>
-      </div>
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-[#0e0e11] text-[#fff8ef]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(255,141,137,0.18),transparent_28%),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100%_100%,120px_100%] opacity-45" />
+      <motion.div
+        aria-hidden="true"
+        animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.04, 1] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        className="pointer-events-none absolute -top-20 right-[-140px] h-[360px] w-[360px] rounded-full bg-[#ff8d89]/20 blur-[100px]"
+      />
 
-      {/* ─── HEADER ─── */}
-      <header className="absolute top-0 left-0 right-0 flex items-center justify-between px-24 py-6 z-10">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="bg-[#a855f7] flex items-center justify-center p-2 rounded-full w-[35.7px] h-[37.7px] shrink-0">
-            <img alt="MusicTwins icon" className="w-[19.7px] h-[21.7px]" src={imgLogoIcon} />
-          </div>
-          <span
-            className="text-white text-[20px] tracking-[-0.5px]"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800 }}
-          >
-            MusicTwins
-          </span>
-        </div>
-
-        {/* Nav */}
-        <nav className="flex items-center gap-8">
-          {['Características', 'Comunidad', 'Premium'].map((link) => (
-            <a
-              key={link}
-              href="#"
-              className="text-[#f1f5f9] text-[14px] font-medium no-underline hover:text-[#a855f7] transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              {link}
-            </a>
-          ))}
-        </nav>
-
-        {/* Login button */}
-        <button
-          className="border border-[#1e293b] text-white text-[14px] font-medium px-8 py-2.5 rounded-full hover:border-[#a855f7] transition-colors"
-          style={{ fontFamily: "'Inter', sans-serif" }}
-        >
-          Login
-        </button>
-      </header>
-
-      {/* ─── MAIN CONTENT ─── */}
-      <main className="absolute top-[92px] left-0 right-0 flex flex-col items-center px-6 pt-1">
-        {/* Hero Section */}
-        <div className="flex flex-col items-center gap-8 max-w-[896px] w-full relative">
-          {/* Floating decorative cards */}
-          <div className="absolute inset-0 pointer-events-none overflow-visible">
-            {/* Top left card */}
-            <div
-              className="absolute left-[122px] top-[98px] w-[267px] h-[133px] flex items-center justify-center animate-float-card-1 opacity-50 hover:opacity-70 transition-opacity"
-            >
-              <div className="backdrop-blur-md bg-white/[0.04] border border-white/[0.12] rounded-[48px] p-4 w-[256px] shadow-lg">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#1e293b] rounded-2xl w-12 h-12 shrink-0" />
-                  <div className="flex flex-col gap-2">
-                    <div className="bg-[#334155] h-3 rounded-2xl w-24" />
-                    <div className="bg-[#1e293b] h-2 rounded-2xl w-16" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom right card */}
-            <div
-              className="absolute right-[124px] bottom-[126px] w-[263px] h-[108px] flex items-center justify-center animate-float-card-2 opacity-50 hover:opacity-70 transition-opacity"
-            >
-              <div className="backdrop-blur-md bg-white/[0.04] border border-white/[0.12] rounded-[48px] p-4 w-[256px] shadow-lg">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#1e293b] rounded-2xl w-12 h-12 shrink-0" />
-                  <div className="flex flex-col gap-2">
-                    <div className="bg-[#334155] h-3 rounded-2xl w-24" />
-                    <div className="bg-[#1e293b] h-2 rounded-2xl w-16" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Middle left card */}
-            <div
-              className="absolute left-[60px] bottom-[163px] w-[200px] h-[97px] flex items-center justify-center animate-float-card-3 opacity-50 hover:opacity-70 transition-opacity"
-            >
-              <div className="backdrop-blur-md bg-white/[0.04] border border-white/[0.12] rounded-[48px] p-3 w-[192px] shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className="bg-[rgba(168,85,247,0.2)] rounded-full w-8 h-8 flex items-center justify-center shrink-0">
-                    <img alt="" className="w-[5.5px] h-[7px]" src={imgPlayIcon} />
-                  </div>
-                  <div className="bg-[#1e293b] h-2 rounded-2xl w-20" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Badge */}
-          <div className="flex flex-col items-center gap-4 relative z-10">
-            <div className="bg-[rgba(168,85,247,0.1)] px-3 py-1 rounded-full animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              <span
-                className="text-[#a855f7] text-[12px] tracking-[1.2px] uppercase font-medium"
-                style={{ fontFamily: "'Inter', sans-serif" }}
-              >
-                Comparte tu ritmo
-              </span>
-            </div>
-
-            {/* Headline */}
-            <div className="text-center">
-              <p
-                className="text-white text-[72px] leading-[1] tracking-[-1.8px] animate-fade-in-up"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, animationDelay: '0.2s' }}
-              >
-                Tu música. La de tus
-              </p>
-              <p
-                className="text-white text-[72px] leading-[1] tracking-[-1.8px] animate-fade-in-up"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, animationDelay: '0.3s' }}
-              >
-                amigos.
-              </p>
-              <p
-                className="text-[#a855f7] text-[72px] leading-[1] tracking-[-1.8px] animate-fade-in-up"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, animationDelay: '0.4s' }}
-              >
-                En un solo lugar.
-              </p>
-            </div>
-
-            {/* Subtitle */}
-            <p
-              className="text-[#94a3b8] text-[20px] text-center leading-[28px] max-w-[576px] animate-fade-in-up"
-              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, animationDelay: '0.5s' }}
-            >
-              Descubre las coincidencias musicales con tus amigos en una experiencia premium diseñada para audiófilos.
-            </p>
-          </div>
-
-          {/* CTA */}
-          <div className="flex flex-col items-center gap-4 relative z-10 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-            <button
-              onClick={onEnterApp}
-              className="flex items-center gap-3 bg-[#a855f7] text-[#0d0d0f] font-medium text-[16px] px-8 py-4 rounded-full shadow-[0px_0px_30px_0px_rgba(168,85,247,0.5)] hover:bg-[#9333ea] hover:shadow-[0px_0px_40px_0px_rgba(168,85,247,0.7)] transition-all duration-300 w-[320px] justify-center active:scale-95"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              <img alt="Spotify" className="w-6 h-6" src={imgSpotifyIcon} />
-              Continuar con Spotify
-            </button>
-            <p
-              className="text-[#64748b] text-[12px] font-medium"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              No publicaremos nada sin tu permiso.
-            </p>
-          </div>
-        </div>
-      </main>
-
-      {/* ─── FEATURES BAR ─── */}
-      <section className="absolute top-[548.5px] left-0 right-0 px-24 py-12">
-        <div className="grid grid-cols-3 gap-6">
-          {[
-            {
-              icon: imgFeatureSync,
-              iconSize: { w: 46, h: 42 },
-              title: 'Sincronización Total',
-              desc: 'Conecta tu cuenta y analiza tus hábitos de escucha en segundos.',
-            },
-            {
-              icon: imgFeatureTwin,
-              iconSize: { w: 48, h: 36 },
-              title: 'Algoritmo Twin',
-              desc: 'Nuestro IA encuentra conexiones profundas entre tus listas y las de tus amigos.',
-            },
-            {
-              icon: imgFeatureViz,
-              iconSize: { w: 40, h: 40 },
-              title: 'Visualizaciones',
-              desc: 'Gráficos dinámicos de tus géneros, artistas y estados de ánimo compartidos.',
-            },
-          ].map((feat, i) => (
-            <div
-              key={feat.title}
-              className="backdrop-blur-sm bg-white/[0.02] border border-white/[0.05] rounded-[32px] p-[25px] flex flex-col gap-4 hover:bg-white/[0.04] hover:border-purple-500/20 transition-all duration-300 cursor-default animate-fade-in-up"
-              style={{ animationDelay: `${0.1 + i * 0.1}s` }}
-            >
-              <img
-                alt={feat.title}
-                style={{ width: feat.iconSize.w, height: feat.iconSize.h }}
-                src={feat.icon}
-              />
-              <div className="flex flex-col gap-1.5">
-                <h3
-                  className="text-white text-[18px] font-medium leading-[28px]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {feat.title}
-                </h3>
-                <p
-                  className="text-[#94a3b8] text-[14px] leading-[22.75px]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {feat.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── LIBRARY SECTION ─── */}
-      <section className="absolute top-[840px] left-0 right-0 py-16">
-        <h2
-          className="text-white text-[24px] font-bold px-24 mb-8 leading-[32px]"
-          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-        >
-          Tendencias globales
-        </h2>
-        <div className="flex gap-6 px-24 overflow-x-auto pb-8">
-          {[
-            { title: 'After Hours', artist: 'The Weeknd' },
-            { title: 'Future Nostalgia', artist: 'Dua Lipa' },
-            { title: 'Midnights', artist: 'Taylor Swift' },
-            { title: 'Un Verano Sin Ti', artist: 'Bad Bunny' },
-          ].map((album) => (
-            <div key={album.title} className="flex flex-col gap-4 shrink-0 w-[256px] group cursor-pointer">
-              <div className="bg-[#1e293b] rounded-[48px] w-[256px] h-[256px] group-hover:bg-[#2a3444] transition-colors" />
-              <div>
-                <p
-                  className="text-white text-[16px] font-medium leading-[24px]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {album.title}
-                </p>
-                <p
-                  className="text-[#94a3b8] text-[14px] leading-[20px]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {album.artist}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── FOOTER ─── */}
-      <footer
-        className="absolute bottom-0 left-0 right-0 border-t border-white/[0.05] flex items-center justify-between px-24 pb-10 pt-10"
-        style={{ top: '1380px' }}
+      <motion.header
+        initial={{ y: -16, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="sticky top-0 z-40 border-b border-white/10 bg-[#0e0e11]/90 backdrop-blur-md"
       >
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="bg-[#a855f7] flex items-center justify-center rounded-full w-6 h-6">
-            <img alt="" className="w-[11.49px] h-[12.66px]" src={imgLogoIcon} />
-          </div>
-          <span
-            className="text-white text-[16px] font-bold"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+        <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between px-6 py-5 md:px-12">
+          <h1 className="text-3xl font-black tracking-tight">
+            Music<span className="text-[#ff5858]">Twins</span>
+          </h1>
+
+          <nav className="hidden items-center gap-8 text-sm text-[#acaaae] md:flex">
+            <a href="#plataforma" className="hover:text-[#ff8d89]">The Platform</a>
+            <a href="#features" className="hover:text-[#ff8d89]">Features</a>
+            <a href="#conecta" className="hover:text-[#ff8d89]">Connect</a>
+            <a href="#contacto" className="hover:text-[#ff8d89]">Contact</a>
+          </nav>
+
+          <button
+            onClick={() => router.push('/auth')}
+            className="rounded-full bg-[#ff8d89] px-5 py-2 text-sm font-black text-black shadow-[0_10px_28px_rgba(255,141,137,0.35)] transition-transform duration-200 hover:scale-[1.03] hover:brightness-105"
           >
-            MusicTwins
-          </span>
+            Join the Pulse
+          </button>
+        </div>
+      </motion.header>
+
+      <section id="plataforma" className="relative mx-auto grid w-full max-w-[1536px] grid-cols-1 gap-10 px-6 pb-20 pt-16 md:grid-cols-2 md:gap-16 md:px-12 md:pt-24">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={stagger}
+          className="order-2 flex flex-col items-start gap-6 md:order-1 md:pt-8"
+        >
+          <motion.div variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }} className="rounded-full border border-cyan-400/25 bg-cyan-400/10 px-4 py-1 text-[10px] font-medium tracking-[0.24em] text-cyan-300">
+            SINCRONIZACION ANALOGICA V2.0
+          </motion.div>
+
+          <motion.h2 variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} className="text-[64px] font-black leading-[0.9] tracking-[-0.04em] md:text-[110px] xl:text-[128px]">
+            <span className="block">Tu</span>
+            <span className="block">Identidad</span>
+            <span className="block italic text-[#ff8d89]">Musical</span>
+          </motion.h2>
+
+          <motion.p variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="max-w-xl text-base leading-relaxed text-[#acaaae] md:text-lg">
+            Descubre como suenas. Encuentra tus twins. Trasciende el algoritmo y revela tu ADN sonoro con estadisticas reales y conexiones humanas.
+          </motion.p>
+
+          <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="flex flex-wrap items-center gap-4">
+            <motion.button
+              onClick={() => router.push('/auth')}
+              className="rounded-full bg-[#ff8d89] px-8 py-4 text-base font-black text-black shadow-[0_14px_40px_rgba(255,141,137,0.35)] hover:brightness-105"
+              whileHover={{ y: -2, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Comenzar Ahora
+            </motion.button>
+            <motion.button className="rounded-full border border-white/15 bg-white/5 px-8 py-4 text-base font-bold text-[#fff8ef] backdrop-blur" whileHover={{ y: -2 }}>
+              Ver Demo
+            </motion.button>
+          </motion.div>
+        </motion.div>
+
+        <motion.div {...fadeUp} className="order-1 flex items-center justify-center md:order-2">
+          <div className="relative grid place-items-center">
+            <div className="absolute h-[360px] w-[360px] rounded-full bg-[#ff8d89]/20 blur-[90px] md:h-[480px] md:w-[480px]" />
+
+            <motion.div
+              animate={{ rotate: 360, y: [0, -8, 0] }}
+              transition={{ rotate: { duration: 24, repeat: Infinity, ease: 'linear' }, y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' } }}
+              className="relative z-10 h-[320px] w-[320px] rounded-full border border-white/10 bg-[#050505] p-8 shadow-[0_30px_60px_rgba(0,0,0,0.35)] md:h-[500px] md:w-[500px]"
+            >
+              <div className="relative h-full w-full rounded-full border border-white/5">
+                <div className="absolute inset-[8%] rounded-full border border-white/5" />
+                <div className="absolute inset-[18%] rounded-full border border-white/5" />
+                <div className="absolute inset-[30%] rounded-full border border-white/5" />
+                <div className="absolute inset-[34%] overflow-hidden rounded-full border-4 border-[#0e0e11]">
+                  <img src={viniloImage} alt="Music Identity Cover" className="h-full w-full object-cover" />
+                </div>
+              </div>
+            </motion.div>
+
+            <div className="absolute right-[-4px] top-[-16px] h-[190px] w-[12px] rotate-12 rounded-full bg-[#25252a] md:right-[-18px] md:h-[256px] md:w-[16px]" />
+          </div>
+        </motion.div>
+      </section>
+
+      <motion.section {...fadeUp} id="features" className="mx-auto flex w-full max-w-[1536px] flex-col gap-12 px-6 py-20 md:px-12">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-medium tracking-[0.3em] text-cyan-300">VISUALIZACION DE DATOS</p>
+            <h3 className="mt-2 text-4xl font-black tracking-[-0.03em] md:text-5xl">Tu Pulso en Numeros.</h3>
+          </div>
+          <p className="max-w-sm text-right text-xs tracking-[0.12em] text-[#acaaae] md:text-sm">
+            METRICAS DE FIDELIDAD ULTRA-ALTA PARA COLECCIONISTAS DE MOMENTOS.
+          </p>
         </div>
 
-        {/* Links */}
-        <div className="flex items-center gap-8">
-          {['Privacidad', 'Términos', 'Contacto'].map((link) => (
-            <a
-              key={link}
-              href="#"
-              className="text-[#64748b] text-[14px] no-underline hover:text-white transition-colors"
-              style={{ fontFamily: "'Inter', sans-serif" }}
-            >
-              {link}
-            </a>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+          <motion.article whileHover={{ y: -4 }} className="rounded-xl border border-white/10 bg-[#1f1f23]/70 p-6 md:col-span-8">
+            <p className="text-xs tracking-[0.2em] text-white/50">ARTISTAS MAS ESCUCHADOS</p>
+            <div className="mt-6 space-y-5">
+              {artists.map((artist) => (
+                <motion.div key={artist.rank} className="flex items-center gap-4" initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.45 }}>
+                  <span className={artist.highlight ? 'w-12 text-4xl font-black italic text-[#ff8d89]' : 'w-12 text-4xl font-black text-white/20'}>{artist.rank}</span>
+                  <div className="flex-1">
+                    <div className="flex items-end justify-between">
+                      <p className="text-2xl font-bold">{artist.name}</p>
+                      <p className="text-sm text-cyan-300">{artist.minutes}</p>
+                    </div>
+                    <div className="mt-2 h-1 rounded-full bg-[#131316]">
+                      <motion.div
+                        className="h-full rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(0,210,255,0.5)]"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: artist.width }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.article>
+
+          <motion.article whileHover={{ y: -4, scale: 1.01 }} className="rounded-xl bg-[#ff8d89] p-6 text-black md:col-span-4">
+            <p className="text-xs font-bold tracking-[0.2em]">TIEMPO TOTAL</p>
+            <p className="mt-4 text-6xl font-black leading-none">52k+</p>
+            <p className="mt-2 text-sm font-medium tracking-[0.1em]">MINUTOS DE PURA EUFORIA</p>
+            <p className="mt-8 text-xs font-medium">ACTUALIZADO HACE 2 MIN</p>
+          </motion.article>
+
+          <motion.article whileHover={{ y: -4 }} className="rounded-xl border border-white/10 bg-[#1f1f23]/70 p-6 md:col-span-4">
+            <p className="text-xs tracking-[0.2em] text-white/50">ADN DE GENERO</p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              {genres.map((genre) => (
+                <motion.div key={genre.label} whileHover={{ scale: 1.03 }} className="rounded-lg bg-[#1a1a1f] p-4">
+                  <p className={`text-xs font-medium ${genre.color}`}>{genre.label}</p>
+                  <p className="mt-1 text-2xl font-bold">{genre.value}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.article>
+
+          <motion.article whileHover={{ y: -4 }} className="relative overflow-hidden rounded-xl border border-white/10 bg-[#1f1f23]/70 p-6 md:col-span-8">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(255,141,137,0.18),transparent_45%)]" />
+            <div className="relative">
+              <p className="text-xs tracking-[0.3em] text-[#ff8d89]">LIVE EXPERIENCE</p>
+              <h4 className="mt-2 text-3xl font-black">Proximos Conciertos</h4>
+              <div className="mt-5 flex flex-wrap gap-4">
+                {concerts.map((concert) => (
+                  <motion.div key={concert.title} whileHover={{ y: -3 }} className="min-w-[190px] rounded-lg border border-white/10 bg-[#25252a]/70 p-4">
+                    <p className="text-xs text-cyan-300">{concert.date}</p>
+                    <p className="mt-1 font-bold">{concert.title}</p>
+                    <p className="text-xs text-white/45">{concert.place}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.article>
+        </div>
+      </motion.section>
+
+      <motion.section {...fadeUp} id="conecta" className="bg-[#131316] py-24">
+        <div className="mx-auto grid w-full max-w-[1536px] grid-cols-1 items-center gap-16 px-6 md:grid-cols-2 md:px-12">
+          <motion.div whileHover={{ y: -4 }} className="mx-auto w-full max-w-md rounded-[36px] border border-white/10 bg-[#1f1f23]/70 p-6">
+            <div className="flex items-center justify-between">
+              <h5 className="text-lg font-bold">Actividad</h5>
+              <span className="h-1 w-4 rounded-full bg-white/30" />
+            </div>
+            <div className="mt-6 space-y-4">
+              <div className="flex items-start gap-3 rounded-xl bg-black/20 p-3">
+                <div className="mt-1 h-8 w-8 rounded-full bg-rose-400/60" />
+                <div>
+                  <p className="text-sm">Empezaste a escuchar New Moon</p>
+                  <p className="text-xs text-white/45">Now Playing</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 rounded-xl bg-black/20 p-3">
+                <div className="mt-1 h-8 w-8 rounded-full bg-cyan-400/60" />
+                <div>
+                  <p className="text-sm">Match con tu twin musical</p>
+                  <p className="text-xs text-white/45">Hace 3 min</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          <div>
+            <p className="text-xs tracking-[0.3em] text-[#ff8d89]">SOCIAL EXPERIENCE</p>
+            <h5 className="mt-2 text-5xl font-black leading-tight">
+              Musica que nos <span className="text-[#ff8d89] italic">Une.</span>
+            </h5>
+            <p className="mt-6 max-w-xl text-[#acaaae]">
+              Encuentra a tu MusicTwins, comparte historias musicales y crea playlists colaborativas que son bandas sonoras para tu tribu.
+            </p>
+            <ul className="mt-6 space-y-3 text-sm">
+              <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-cyan-300" /> Twin Matchmaking System</li>
+              <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#ff8d89]" /> Instant Share Vibe Cards</li>
+            </ul>
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section {...fadeUp} className="mx-auto w-full max-w-[1536px] px-6 py-24 md:px-12">
+        <p className="text-xs tracking-[0.3em] text-cyan-300">YOUR VINYL ARCHIVE</p>
+        <h5 className="mt-2 text-5xl font-black">Tu Coleccion <span className="italic text-[#ff8d89]">Digital.</span></h5>
+
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {collection.map((item) => (
+            <motion.article key={item.title} whileHover={{ y: -5 }} className={`rounded-xl border border-white/10 bg-gradient-to-br ${item.tone} p-4`}>
+              <div className="flex items-center gap-4">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/20 bg-black">
+                  <img src={viniloImage} alt={`Vinilo ${item.title}`} className="h-full w-full object-cover" />
+                </div>
+                <div>
+                  <h6 className="text-lg font-bold leading-tight">{item.title}</h6>
+                  <p className="text-sm text-[#acaaae]">{item.artist}</p>
+                </div>
+              </div>
+            </motion.article>
           ))}
         </div>
+      </motion.section>
 
-        {/* Copyright */}
-        <p
-          className="text-[#64748b] text-[12px]"
-          style={{ fontFamily: "'Inter', sans-serif" }}
+      <motion.section {...fadeUp} id="contacto" className="mx-auto flex w-full max-w-[1536px] flex-col items-center px-6 pb-24 pt-4 text-center md:px-12">
+        <h5 className="text-5xl font-black leading-tight md:text-7xl">
+          Listo para el <span className="text-[#ff8d89]">Ritmo?</span>
+        </h5>
+        <p className="mt-6 max-w-xl text-[#acaaae]">Unete a la comunidad de melomanos mas avanzada del mundo.</p>
+        <motion.button
+          onClick={() => router.push('/auth')}
+          className="mt-10 rounded-full bg-[#ff8d89] px-9 py-4 text-base font-black text-black shadow-[0_14px_40px_rgba(255,141,137,0.35)]"
+          whileHover={{ y: -3, scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          © 2024 MusicTwins. No afiliado con Spotify AB.
+          Crear Mi Perfil
+        </motion.button>
+      </motion.section>
+
+      <footer className="border-t border-white/10 px-6 py-6 text-xs text-[#7d7d85] md:px-12">
+        <div className="mx-auto flex w-full max-w-[1536px] flex-wrap items-center justify-between gap-3">
+          <p className="font-black text-[#ff8d89]">MusicTwins</p>
+          <p>hello@musictwins.com</p>
+          <p>2026 ALL RIGHTS RESERVED</p>
+        </div>
+        <p className="mx-auto mt-3 w-full max-w-[1536px] text-[11px] text-[#6f6f78]">
+          CD Disk icon by{' '}
+          <a href="https://iconscout.com/contributors/ilustroflat" target="_blank" rel="noreferrer" className="text-[#a0a0ac] underline-offset-2 hover:underline">
+            ilustroflat
+          </a>{' '}
+          from{' '}
+          <a href="https://iconscout.com/icons/cd-disk" target="_blank" rel="noreferrer" className="text-[#a0a0ac] underline-offset-2 hover:underline">
+            IconScout
+          </a>
+          .
         </p>
       </footer>
-    </div>
-  );
+    </main>
+  )
 }
