@@ -11,6 +11,8 @@ import {
   UilUsersAlt,
   UilUser,
 } from '@iconscout/react-unicons'
+import { AuthService } from '../../services/api'
+import { useAuthStore } from '../../services/store'
 
 export type AppView = 'feed' | 'twin-match' | 'messages' | 'profile'
 
@@ -127,7 +129,10 @@ export default function AppShell({ children }: AppShellProps) {
 
           <div className="border-t border-white/10 p-4">
             <button
-              onClick={() => router.push('/')}
+              onClick={() => {
+                AuthService.logout();
+                router.push('/');
+              }}
               className="flex w-full items-center gap-3 rounded-2xl border border-transparent px-3 py-2.5 text-sm text-slate-300/80 transition-all duration-200 hover:border-[#e4504a]/50 hover:bg-[#e4504a]/20 hover:text-[#ffd9cc]"
             >
               <UilSignOutAlt size={18} />
@@ -164,7 +169,10 @@ export default function AppShell({ children }: AppShellProps) {
             )
           })}
           <button
-            onClick={() => router.push('/')}
+            onClick={() => {
+              AuthService.logout();
+              router.push('/');
+            }}
             className="rounded-xl px-3 py-2 text-red-200/90"
             aria-label="Cerrar sesión"
           >

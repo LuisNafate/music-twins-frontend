@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
+import { AuthService } from '../services/api'
 
 export default function LandingPage() {
   const router = useRouter()
@@ -87,7 +88,7 @@ export default function LandingPage() {
           </nav>
 
           <button
-            onClick={() => router.push('/auth')}
+            onClick={() => AuthService.loginWithSpotify()}
             className="rounded-full bg-[#ff8d89] px-5 py-2 text-sm font-black text-black shadow-[0_10px_28px_rgba(255,141,137,0.35)] transition-transform duration-200 hover:scale-[1.03] hover:brightness-105"
           >
             Join the Pulse
@@ -118,7 +119,7 @@ export default function LandingPage() {
 
           <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="flex flex-wrap items-center gap-4">
             <motion.button
-              onClick={() => router.push('/auth')}
+              onClick={() => AuthService.loginWithSpotify()}
               className="rounded-full bg-[#ff8d89] px-8 py-4 text-base font-black text-black shadow-[0_14px_40px_rgba(255,141,137,0.35)] hover:brightness-105"
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -299,7 +300,7 @@ export default function LandingPage() {
         </h5>
         <p className="mt-6 max-w-xl text-[#acaaae]">Unete a la comunidad de melomanos mas avanzada del mundo.</p>
         <motion.button
-          onClick={() => router.push('/auth')}
+          onClick={() => AuthService.loginWithSpotify()}
           className="mt-10 rounded-full bg-[#ff8d89] px-9 py-4 text-base font-black text-black shadow-[0_14px_40px_rgba(255,141,137,0.35)]"
           whileHover={{ y: -3, scale: 1.02 }}
           whileTap={{ scale: 0.98 }}

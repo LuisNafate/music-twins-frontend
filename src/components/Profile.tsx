@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { UilBell, UilChartLine, UilFire, UilMusic, UilShieldCheck, UilStar, UilUser } from '@iconscout/react-unicons'
 import AppShell from './shared/AppShell'
+import { useAuthStore } from '../services/store'
 
 const topArtists = [
   { name: 'M83', genre: 'Synthwave', plays: 348 },
@@ -68,18 +69,22 @@ export default function Profile() {
   const [notifEnabled, setNotifEnabled] = useState(true)
   const [shareEnabled, setShareEnabled] = useState(true)
   const [publicProfile, setPublicProfile] = useState(true)
+  const { user } = useAuthStore()
+
+  const displayName = user?.username || 'Luis Navarro'
+  const initial = displayName.charAt(0).toUpperCase()
 
   return (
     <AppShell>
       <div className="mx-auto w-full max-w-6xl space-y-5 px-4 py-5 md:px-6 md:py-8">
         <section className="rounded-3xl border border-white/12 bg-slate-950/35 p-5 md:p-6">
           <div className="flex flex-wrap items-start gap-4">
-            <div className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-[#781635]/70 to-[#d4a259]/35 text-white">
-              <UilUser size={34} />
+            <div className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-[#781635]/70 to-[#d4a259]/35 text-white font-display text-3xl font-bold">
+              {initial}
             </div>
             <div className="min-w-[250px] flex-1">
-              <h1 className="font-display text-3xl font-black text-white">Luis Navarro</h1>
-              <p className="text-sm text-slate-300/75">@luisnavarro · Guadalajara, MX</p>
+              <h1 className="font-display text-3xl font-black text-white">{displayName}</h1>
+              <p className="text-sm text-slate-300/75">@{user?.username?.toLowerCase() || 'luisnavarro'} · Mexico</p>
 
               <div className="mt-3 flex flex-wrap gap-2">
                 <span className="rounded-full border border-[#e7b18f]/30 bg-[#781635]/30 px-3 py-1 text-xs text-[#f7e2d5]">Oyente premium</span>

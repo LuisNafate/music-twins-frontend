@@ -1,8 +1,10 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { UilMusic, UilSpinnerAlt } from '@iconscout/react-unicons'
+import { AuthService } from '../services/api'
+import { useAuthStore } from '../services/store'
 
 const steps = [
   'Conectando con Spotify',
@@ -11,33 +13,57 @@ const steps = [
   'Activando tu espacio social',
 ]
 
-export default function AuthLoading() {
+function AuthLoadingContent() {
   const [stepIndex, setStepIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const { setUser, setAuthenticated } = useAuthStore()
 
   useEffect(() => {
-    const total = 3200
-    const tick = 40
-    let elapsed = 0
-    let redirectId: ReturnType<typeof setTimeout> | undefined
+    let isMounted = true
 
-    const interval = setInterval(() => {
-      elapsed += tick
-      setProgress(Math.min((elapsed / total) * 100, 100))
-      setStepIndex(Math.min(Math.floor((elapsed / total) * steps.length), steps.length - 1))
+    async function handleAuth() {
+      try {
+        const token = searchParams.get('token')
+        if (token) {
+          localStorage.setItem('access_token', token)
+          window.history.replaceState({}, document.title, '/auth-loading')
+        }
 
-      if (elapsed >= total) {
-        clearInterval(interval)
-        redirectId = setTimeout(() => router.push('/feed'), 280)
+        setStepIndex(1)
+        setProgress(30)
+
+        const user = await AuthService.getProfile()
+        if (!isMounted) return
+
+        setStepIndex(2)
+        setProgress(60)
+
+        if (user) {
+          setUser(user)
+          setAuthenticated(true)
+        }
+
+        setTimeout(() => {
+          if (!isMounted) return
+          setStepIndex(3)
+          setProgress(100)
+          setTimeout(() => router.push('/feed'), 600)
+        }, 800)
+
+      } catch (error) {
+        console.error('Session failed:', error)
+        if (isMounted) router.push('/')
       }
-    }, tick)
+    }
+
+    handleAuth()
 
     return () => {
-      clearInterval(interval)
-      if (redirectId) clearTimeout(redirectId)
+      isMounted = false
     }
-  }, [router])
+  }, [router, searchParams, setUser, setAuthenticated])
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-app-background px-4 py-8">
@@ -88,5 +114,13 @@ export default function AuthLoading() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function AuthLoading() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-app-background" />}>
+      <AuthLoadingContent />
+    </Suspense>
   )
 }
