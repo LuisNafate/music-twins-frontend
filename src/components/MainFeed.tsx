@@ -137,7 +137,14 @@ export default function MainFeed() {
         
         try {
           const np = await PlayerService.getNowPlaying()
-          if (np) setNowPlaying(np)
+          const data = np?.data || np;
+          if (data) {
+             setNowPlaying({
+               title: data.title || data.item?.name,
+               artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
+               album: data.album || data.item?.album?.name
+             });
+          }
         } catch(e) {
           console.warn("Could not fetch now playing", e)
         }
@@ -194,18 +201,11 @@ export default function MainFeed() {
               Explora lo que tus amigos estan escuchando y reacciona al instante. Tu timeline se adapta al ritmo comun de la red.
             </p>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_290px]">
+            <div className="mt-4 grid gap-3 md:grid-cols-[290px]">
               <div className="flex flex-wrap gap-3">
                 <button
-                  onClick={() => router.push('/twin-match')}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#22d3ee] to-[#ff8d89] px-4 py-2 text-sm font-semibold text-white"
-                >
-                  <UilUsersAlt size={16} />
-                  Ver Twin Match
-                </button>
-                <button
                   onClick={() => router.push('/messages')}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/20 px-4 py-2 text-sm text-slate-200 transition-colors hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-[#22d3ee]/40 px-4 py-2 text-sm text-[#fff8ef] bg-[#22d3ee]/5 transition-colors hover:bg-white/10"
                 >
                   <UilMessage size={16} />
                   Abrir mensajes
@@ -262,9 +262,9 @@ export default function MainFeed() {
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-[#25252a]/70 p-4">
-              <p className="font-display text-xl font-bold text-white">{nowPlaying?.title || 'No playback activo'}</p>
-              <p className="text-sm text-[#67e8f9]">{nowPlaying?.artist || 'Esperando música'}</p>
-              <p className="text-xs text-slate-300/65">{nowPlaying?.album || "Spotify Session"}</p>
+              <p className="font-display text-xl font-bold text-white max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.title || 'No playback activo'}</p>
+              <p className="text-sm text-[#67e8f9] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.artist || 'Esperando música'}</p>
+              <p className="text-xs text-slate-300/65 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.album || "Spotify Session"}</p>
 
               <div className="mt-4 flex items-end gap-1">
                 {Array.from({ length: 12 }).map((_, index) => (

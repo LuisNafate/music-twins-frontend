@@ -54,9 +54,7 @@ const navItems: Array<{
   view: AppView
 }> = [
   { icon: UilEstate, label: 'Feed', view: 'feed' },
-  { icon: UilMessage, label: 'Mensajes', view: 'messages' },
-  { icon: UilUsersAlt, label: 'Twin Match', view: 'twin-match' },
-  { icon: UilUser, label: 'Perfil', view: 'profile' },
+  { icon: UilMessage, label: 'Mensajes', view: 'messages' }
 ]
 
 const viewHeadline: Record<AppView, string> = {
@@ -81,9 +79,18 @@ export default function AppShell({ children }: AppShellProps) {
 
   useEffect(() => {
     PlayerService.getNowPlaying()
-      .then(res => setNowPlaying(res))
+      .then(res => {
+         const data = res?.data || res;
+         if(!data) return setNowPlaying(null);
+         
+         setNowPlaying({
+           title: data.title || data.item?.name,
+           artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
+           album: data.album || data.item?.album?.name
+         });
+      })
       .catch((e) => console.warn("No playback available", e))
-  }, [pathname]) // refresh on route changes
+  }, [pathname])
 
   function navigateTo(view: AppView) {
     if (view === 'feed') router.push('/feed')
@@ -125,8 +132,8 @@ export default function AppShell({ children }: AppShellProps) {
               <UilMusic size={16} />
               <span className="text-xs uppercase tracking-[0.18em]">Escucha activa</span>
             </div>
-            <p className="font-display text-sm text-white">{nowPlaying?.title || 'No playback activo'}</p>
-            <p className="text-xs text-slate-300/70">{nowPlaying?.artist ? `${nowPlaying.artist} · ${nowPlaying.album}` : 'Esperando música'}</p>
+            <p className="font-display text-sm text-white text-truncate max-w-[200px]">{nowPlaying?.title || 'No playback activo'}</p>
+            <p className="text-xs text-slate-300/70 text-truncate max-w-[200px]">{nowPlaying?.artist ? `${nowPlaying.artist} · ${nowPlaying.album}` : 'Esperando música'}</p>
             <div className="mt-3 flex h-4 items-end gap-1">
               {[0, 1, 2, 3, 4, 5].map(i => (
                 <span key={i} className={`eq-bar ${!nowPlaying ? 'animate-none h-1' : ''}`} style={{ animationDelay: `${i * 0.08}s` }} />
