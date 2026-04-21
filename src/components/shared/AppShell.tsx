@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   UilEstate,
@@ -11,7 +11,7 @@ import {
   UilUsersAlt,
   UilUser,
 } from '@iconscout/react-unicons'
-import { AuthService } from '../../services/api'
+import { AuthService, PlayerService } from '../../services/api'
 import { useAuthStore } from '../../services/store'
 
 export type AppView = 'feed' | 'twin-match' | 'messages' | 'profile'
@@ -77,6 +77,13 @@ export default function AppShell({ children }: AppShellProps) {
   const pathname = usePathname()
   const router = useRouter()
   const activeView = pathnameToView(pathname)
+  const [nowPlaying, setNowPlaying] = useState<any>(null)
+
+  useEffect(() => {
+    PlayerService.getNowPlaying()
+      .then(res => setNowPlaying(res))
+      .catch((e) => console.warn("No playback available", e))
+  }, [pathname]) // refresh on route changes
 
   function navigateTo(view: AppView) {
     if (view === 'feed') router.push('/feed')
@@ -118,11 +125,11 @@ export default function AppShell({ children }: AppShellProps) {
               <UilMusic size={16} />
               <span className="text-xs uppercase tracking-[0.18em]">Escucha activa</span>
             </div>
-            <p className="font-display text-sm text-white">Midnight City</p>
-            <p className="text-xs text-slate-300/70">M83 · After Dark session</p>
+            <p className="font-display text-sm text-white">{nowPlaying?.title || 'No playback activo'}</p>
+            <p className="text-xs text-slate-300/70">{nowPlaying?.artist ? `${nowPlaying.artist} · ${nowPlaying.album}` : 'Esperando música'}</p>
             <div className="mt-3 flex h-4 items-end gap-1">
               {[0, 1, 2, 3, 4, 5].map(i => (
-                <span key={i} className="eq-bar" style={{ animationDelay: `${i * 0.08}s` }} />
+                <span key={i} className={`eq-bar ${!nowPlaying ? 'animate-none h-1' : ''}`} style={{ animationDelay: `${i * 0.08}s` }} />
               ))}
             </div>
           </div>
