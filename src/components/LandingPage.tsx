@@ -126,9 +126,6 @@ export default function LandingPage() {
             >
               Comenzar Ahora
             </motion.button>
-            <motion.button className="rounded-full border border-white/15 bg-white/5 px-8 py-4 text-base font-bold text-[#fff8ef] backdrop-blur" whileHover={{ y: -2 }}>
-              Ver Demo
-            </motion.button>
           </motion.div>
         </motion.div>
 

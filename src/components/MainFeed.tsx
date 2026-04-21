@@ -201,8 +201,15 @@ export default function MainFeed() {
               Explora lo que tus amigos estan escuchando y reacciona al instante. Tu timeline se adapta al ritmo comun de la red.
             </p>
 
-            <div className="mt-4 grid gap-3 md:grid-cols-[290px]">
+            <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_290px]">
               <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => router.push('/twin-match')}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#22d3ee] to-[#ff8d89] px-4 py-2 text-sm font-semibold text-white hover:brightness-105"
+                >
+                  <UilUsersAlt size={16} />
+                  Añadir Amigos
+                </button>
                 <button
                   onClick={() => router.push('/messages')}
                   className="inline-flex items-center gap-2 rounded-2xl border border-[#22d3ee]/40 px-4 py-2 text-sm text-[#fff8ef] bg-[#22d3ee]/5 transition-colors hover:bg-white/10"

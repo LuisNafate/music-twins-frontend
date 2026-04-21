@@ -54,7 +54,9 @@ const navItems: Array<{
   view: AppView
 }> = [
   { icon: UilEstate, label: 'Feed', view: 'feed' },
-  { icon: UilMessage, label: 'Mensajes', view: 'messages' }
+  { icon: UilMessage, label: 'Mensajes', view: 'messages' },
+  { icon: UilUsersAlt, label: 'Amigos / Match', view: 'twin-match' },
+  { icon: UilUser, label: 'Perfil', view: 'profile' }
 ]
 
 const viewHeadline: Record<AppView, string> = {
