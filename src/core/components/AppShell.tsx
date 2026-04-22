@@ -81,6 +81,7 @@ export default function AppShell({ children }: AppShellProps) {
   const { user, setUser } = useAuthStore()
   const [nowPlaying, setNowPlaying] = useState<any>(null)
   const lastTrackId = useRef<string | null>(null)
+  const isLive = Boolean(nowPlaying?.name)
 
   // Provide strict auth guarding
   useEffect(() => {
@@ -210,9 +211,9 @@ export default function AppShell({ children }: AppShellProps) {
           </nav>
 
           <div className="mx-3 mb-2 border border-[var(--app-border)] bg-[var(--app-bg)] p-3">
-            <div className="mb-2 flex items-center gap-2 text-[var(--accent-primary)]">
+            <div className={`mb-2 flex items-center gap-2 ${isLive ? 'text-[var(--accent-primary)]' : 'text-[var(--app-muted)]'}`}>
               <UilMusic size={14} />
-              <span className="text-[10px] uppercase tracking-[0.15em]">En vivo</span>
+              <span className="text-[10px] uppercase tracking-[0.15em]">{isLive ? 'En vivo' : 'Sin reproducción'}</span>
             </div>
             <div className="flex items-center gap-3">
               {nowPlaying?.imageUrl && (
@@ -222,7 +223,7 @@ export default function AppShell({ children }: AppShellProps) {
               )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[12px] font-bold uppercase tracking-[0.03em] text-[var(--app-text)]">{nowPlaying?.name || 'Silencio'}</p>
-                <p className="truncate text-[10px] text-[var(--app-muted)]">{nowPlaying?.artist || 'Spotify'}</p>
+                <p className="truncate text-[10px] text-[var(--app-muted)]">{isLive ? (nowPlaying?.artist || 'Artista desconocido') : 'Abre Spotify para sincronizar'}</p>
               </div>
             </div>
           </div>

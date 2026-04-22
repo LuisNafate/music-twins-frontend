@@ -232,6 +232,7 @@ export default function MainFeed() {
   const liveCount = friendSummary.length
   const trendCount = trendingTracks.length
   const activityCount = feedData.length
+  const isLive = Boolean(nowPlaying?.name)
 
   return (
     <AppShell>
@@ -239,17 +240,12 @@ export default function MainFeed() {
         <section className="space-y-[clamp(var(--space-8),4vw,var(--space-16))]">
           <article className="grid gap-5 border border-[var(--app-border)] bg-[var(--app-surface)] p-5 md:grid-cols-[1.3fr_1fr] md:p-6">
             <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-primary)]">Dashboard Musical</p>
-              <h1 className="type-page mt-2 font-display font-black uppercase leading-none text-[var(--app-text)]">Tu actividad en tiempo real</h1>
-              <p className="mt-3 max-w-2xl text-sm text-[var(--app-muted)]">
-                Prioriza lo importante: quien escucha ahora, tus favoritos recientes, tendencias de tu red y el historial completo en una sola vista.
-              </p>
+              <p className="text-xs uppercase tracking-[0.18em] text-[var(--accent-primary)]">Resumen de hoy</p>
+              <h1 className="type-page mt-2 font-display font-black uppercase leading-none text-[var(--app-text)]">Tu actividad</h1>
+              <p className="mt-3 max-w-2xl text-sm text-[var(--app-muted)]">Lo importante de tu día musical, en una vista.</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 <button onClick={() => router.push('/twin-match')} className="border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.14)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--app-text)]">
                   Ver twins
-                </button>
-                <button onClick={() => router.push('/messages')} className="border border-[var(--app-border)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--app-muted)] hover:border-[var(--accent-primary)] hover:text-[var(--app-text)]">
-                  Ir a mensajes
                 </button>
               </div>
             </div>
@@ -433,9 +429,9 @@ export default function MainFeed() {
         <aside className="space-y-6 xl:sticky xl:top-6 xl:h-fit">
           <section className="border border-[var(--app-border)] bg-[var(--app-surface)] p-5">
             <div className="mb-4 flex items-center justify-between">
-              <div className="inline-flex items-center gap-2 text-[var(--accent-primary)]">
+              <div className={`inline-flex items-center gap-2 ${isLive ? 'text-[var(--accent-primary)]' : 'text-[var(--app-muted)]'}`}>
                 <UilMusic size={18} />
-                <p className="text-xs font-bold uppercase tracking-[0.2em]">En vivo (Tú)</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em]">{isLive ? 'En vivo (Tú)' : 'Sin reproducción'}</p>
               </div>
               <UilUsersAlt size={16} className="text-[var(--app-muted)]" />
             </div>
@@ -451,7 +447,7 @@ export default function MainFeed() {
                 </div>
               )}
               <p className="truncate font-display text-[clamp(1.1rem,1rem+0.4vw,1.35rem)] font-bold uppercase text-[var(--app-text)]">{nowPlaying?.name || 'Nada sonando'}</p>
-              <p className="truncate text-sm text-[var(--accent-primary)]">{nowPlaying?.artist || 'Abre Spotify'}</p>
+              <p className={`truncate text-sm ${isLive ? 'text-[var(--accent-primary)]' : 'text-[var(--app-muted)]'}`}>{isLive ? (nowPlaying?.artist || 'Artista desconocido') : 'Abre Spotify para sincronizar'}</p>
 
               {nowPlaying && (
                 <div className="mt-4 flex h-6 items-end gap-1">

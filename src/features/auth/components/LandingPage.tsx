@@ -34,10 +34,10 @@ export default function LandingPage() {
 
   const genres = useMemo(
     () => [
-      { label: 'SYNTH', value: '42%', color: 'text-cyan-300' },
-      { label: 'LO-FI', value: '28%', color: 'text-rose-300' },
-      { label: 'JAZZ', value: '15%', color: 'text-slate-300' },
-      { label: 'OTHER', value: '15%', color: 'text-slate-300' },
+      { label: 'SYNTH', value: '42%', color: 'text-[var(--accent-primary)]' },
+      { label: 'LO-FI', value: '28%', color: 'text-[var(--app-text)]' },
+      { label: 'JAZZ', value: '15%', color: 'text-[var(--app-muted)]' },
+      { label: 'OTHER', value: '15%', color: 'text-[var(--app-muted)]' },
     ],
     []
   )
@@ -52,75 +52,75 @@ export default function LandingPage() {
 
   const collection = useMemo(
     () => [
-      { title: 'Random Access Memories', artist: 'Daft Punk', tone: 'from-rose-200/30 to-rose-400/10' },
-      { title: 'In Rainbows', artist: 'Radiohead', tone: 'from-cyan-200/30 to-cyan-400/10' },
-      { title: 'Currents', artist: 'Tame Impala', tone: 'from-slate-200/20 to-slate-500/10' },
+      { title: 'Random Access Memories', artist: 'Daft Punk' },
+      { title: 'In Rainbows', artist: 'Radiohead' },
+      { title: 'Currents', artist: 'Tame Impala' },
     ],
     []
   )
 
   return (
-    <main className="relative min-h-screen w-full overflow-x-hidden bg-[#0e0e11] text-[#fff8ef]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(255,141,137,0.18),transparent_28%),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:100%_100%,120px_100%] opacity-45" />
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-app-background text-[var(--app-text)]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(transparent_31px,rgba(240,237,230,0.04)_32px),linear-gradient(90deg,transparent_31px,rgba(240,237,230,0.04)_32px)] bg-[length:32px_32px]" />
       <motion.div
         aria-hidden="true"
         animate={{ opacity: [0.18, 0.28, 0.18], scale: [1, 1.04, 1] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute -top-20 right-[-140px] h-[360px] w-[360px] rounded-full bg-[#ff8d89]/20 blur-[100px]"
+        className="pointer-events-none absolute -top-20 right-[-140px] h-[360px] w-[360px] rounded-full bg-[rgba(224,108,26,0.16)] blur-[100px]"
       />
 
       <motion.header
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="sticky top-0 z-40 border-b border-white/10 bg-[#0e0e11]/90 backdrop-blur-md"
+        className="sticky top-0 z-40 border-b border-[var(--app-border)] bg-[var(--app-bg)]/90 backdrop-blur-md"
       >
         <div className="mx-auto flex w-full max-w-[1536px] items-center justify-between px-6 py-5 md:px-12">
-          <h1 className="text-3xl font-black tracking-tight">
-            Music<span className="text-[#ff5858]">Twins</span>
+          <h1 className="font-display text-5xl leading-none tracking-tight text-[var(--app-text)]">
+            Music<span className="text-[var(--accent-primary)]">Twins</span>
           </h1>
 
-          <nav className="hidden items-center gap-8 text-sm text-[#acaaae] md:flex">
-            <a href="#plataforma" className="hover:text-[#ff8d89]">The Platform</a>
-            <a href="#features" className="hover:text-[#ff8d89]">Features</a>
-            <a href="#conecta" className="hover:text-[#ff8d89]">Connect</a>
-            <a href="#contacto" className="hover:text-[#ff8d89]">Contact</a>
+          <nav className="hidden items-center gap-8 text-sm uppercase tracking-[0.08em] text-[var(--app-muted)] md:flex">
+            <a href="#plataforma" className="hover:text-[var(--accent-primary)]">The Platform</a>
+            <a href="#features" className="hover:text-[var(--accent-primary)]">Features</a>
+            <a href="#conecta" className="hover:text-[var(--accent-primary)]">Connect</a>
+            <a href="#contacto" className="hover:text-[var(--accent-primary)]">Contact</a>
           </nav>
 
           <button
             onClick={() => AuthService.loginWithSpotify()}
-            className="rounded-full bg-[#ff8d89] px-5 py-2 text-sm font-black text-black shadow-[0_10px_28px_rgba(255,141,137,0.35)] transition-transform duration-200 hover:scale-[1.03] hover:brightness-105"
+            className="border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.14)] px-5 py-2 text-sm font-black uppercase tracking-[0.06em] text-[var(--app-text)] transition-colors hover:bg-[rgba(224,108,26,0.22)]"
           >
             Join the Pulse
           </button>
         </div>
       </motion.header>
 
-      <section id="plataforma" className="relative mx-auto grid w-full max-w-[1536px] grid-cols-1 gap-10 px-6 pb-20 pt-16 md:grid-cols-2 md:gap-16 md:px-12 md:pt-24">
+      <section id="plataforma" className="relative mx-auto grid w-full max-w-[1536px] grid-cols-1 gap-10 px-6 pb-20 pt-8 md:grid-cols-2 md:gap-16 md:px-12 md:pt-10">
         <motion.div
           initial="hidden"
           animate="show"
           variants={stagger}
           className="order-2 flex flex-col items-start gap-6 md:order-1 md:pt-8"
         >
-          <motion.div variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }} className="rounded-full border border-cyan-400/25 bg-cyan-400/10 px-4 py-1 text-[10px] font-medium tracking-[0.24em] text-cyan-300">
-            SINCRONIZACION ANALOGICA V2.0
+          <motion.div variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }} className="border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.12)] px-4 py-1 text-[10px] font-medium tracking-[0.24em] text-[var(--accent-primary)]">
+            ARCHIVO SONORO PERSONAL
           </motion.div>
 
           <motion.h2 variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0 } }} className="text-[64px] font-black leading-[0.9] tracking-[-0.04em] md:text-[110px] xl:text-[128px]">
             <span className="block">Tu</span>
             <span className="block">Identidad</span>
-            <span className="block italic text-[#ff8d89]">Musical</span>
+            <span className="block italic text-[var(--accent-primary)]">Musical</span>
           </motion.h2>
 
-          <motion.p variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="max-w-xl text-base leading-relaxed text-[#acaaae] md:text-lg">
+          <motion.p variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="max-w-xl text-base leading-relaxed text-[var(--app-muted)] md:text-lg">
             Descubre como suenas. Encuentra tus twins. Trasciende el algoritmo y revela tu ADN sonoro con estadisticas reales y conexiones humanas.
           </motion.p>
 
           <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="flex flex-wrap items-center gap-4">
             <motion.button
               onClick={() => AuthService.loginWithSpotify()}
-              className="rounded-full bg-[#ff8d89] px-8 py-4 text-base font-black text-black shadow-[0_14px_40px_rgba(255,141,137,0.35)] hover:brightness-105"
+              className="border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.14)] px-8 py-4 text-base font-black uppercase tracking-[0.06em] text-[var(--app-text)] hover:bg-[rgba(224,108,26,0.22)]"
               whileHover={{ y: -2, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -131,12 +131,12 @@ export default function LandingPage() {
 
         <motion.div {...fadeUp} className="order-1 flex items-center justify-center md:order-2">
           <div className="relative grid place-items-center">
-            <div className="absolute h-[360px] w-[360px] rounded-full bg-[#ff8d89]/20 blur-[90px] md:h-[480px] md:w-[480px]" />
+            <div className="absolute h-[360px] w-[360px] rounded-full bg-[rgba(224,108,26,0.16)] blur-[90px] md:h-[480px] md:w-[480px]" />
 
             <motion.div
               animate={{ rotate: 360, y: [0, -8, 0] }}
               transition={{ rotate: { duration: 24, repeat: Infinity, ease: 'linear' }, y: { duration: 4.2, repeat: Infinity, ease: 'easeInOut' } }}
-              className="relative z-10 h-[320px] w-[320px] rounded-full border border-white/10 bg-[#050505] p-8 shadow-[0_30px_60px_rgba(0,0,0,0.35)] md:h-[500px] md:w-[500px]"
+              className="relative z-10 h-[320px] w-[320px] rounded-full border border-[var(--app-border)] bg-[#050505] p-8 shadow-[0_30px_60px_rgba(0,0,0,0.35)] md:h-[500px] md:w-[500px]"
             >
               <div className="relative h-full w-full rounded-full border border-white/5">
                 <div className="absolute inset-[8%] rounded-full border border-white/5" />
@@ -148,7 +148,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
-            <div className="absolute right-[-4px] top-[-16px] h-[190px] w-[12px] rotate-12 rounded-full bg-[#25252a] md:right-[-18px] md:h-[256px] md:w-[16px]" />
+            <div className="absolute right-[-4px] top-[-16px] h-[190px] w-[12px] rotate-12 rounded-full bg-[var(--app-surface)] md:right-[-18px] md:h-[256px] md:w-[16px]" />
           </div>
         </motion.div>
       </section>
@@ -156,10 +156,10 @@ export default function LandingPage() {
       <motion.section {...fadeUp} id="features" className="mx-auto flex w-full max-w-[1536px] flex-col gap-12 px-6 py-20 md:px-12">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs font-medium tracking-[0.3em] text-cyan-300">VISUALIZACION DE DATOS</p>
+            <p className="text-xs font-medium tracking-[0.3em] text-[var(--accent-primary)]">VISUALIZACION DE DATOS</p>
             <h3 className="mt-2 text-4xl font-black tracking-[-0.03em] md:text-5xl">Tu Pulso en Numeros.</h3>
           </div>
-          <p className="max-w-sm text-right text-xs tracking-[0.12em] text-[#acaaae] md:text-sm">
+          <p className="max-w-sm text-right text-xs tracking-[0.12em] text-[var(--app-muted)] md:text-sm">
             METRICAS DE FIDELIDAD ULTRA-ALTA PARA COLECCIONISTAS DE MOMENTOS.
           </p>
         </div>
@@ -170,15 +170,15 @@ export default function LandingPage() {
             <div className="mt-6 space-y-5">
               {artists.map((artist) => (
                 <motion.div key={artist.rank} className="flex items-center gap-4" initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.45 }}>
-                  <span className={artist.highlight ? 'w-12 text-4xl font-black italic text-[#ff8d89]' : 'w-12 text-4xl font-black text-white/20'}>{artist.rank}</span>
+                  <span className={artist.highlight ? 'w-12 text-4xl font-black italic text-[var(--accent-primary)]' : 'w-12 text-4xl font-black text-white/20'}>{artist.rank}</span>
                   <div className="flex-1">
                     <div className="flex items-end justify-between">
                       <p className="text-2xl font-bold">{artist.name}</p>
-                      <p className="text-sm text-cyan-300">{artist.minutes}</p>
+                      <p className="text-sm text-[var(--accent-primary)]">{artist.minutes}</p>
                     </div>
                     <div className="mt-2 h-1 rounded-full bg-[#131316]">
                       <motion.div
-                        className="h-full rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(0,210,255,0.5)]"
+                        className="h-full rounded-full bg-[var(--accent-primary)]"
                         initial={{ width: 0 }}
                         whileInView={{ width: artist.width }}
                         viewport={{ once: true }}
@@ -191,7 +191,7 @@ export default function LandingPage() {
             </div>
           </motion.article>
 
-          <motion.article whileHover={{ y: -4, scale: 1.01 }} className="rounded-xl bg-[#ff8d89] p-6 text-black md:col-span-4">
+          <motion.article whileHover={{ y: -4, scale: 1.01 }} className="rounded-xl border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.12)] p-6 text-[var(--app-text)] md:col-span-4">
             <p className="text-xs font-bold tracking-[0.2em]">TIEMPO TOTAL</p>
             <p className="mt-4 text-6xl font-black leading-none">52k+</p>
             <p className="mt-2 text-sm font-medium tracking-[0.1em]">MINUTOS DE PURA EUFORIA</p>
@@ -213,12 +213,12 @@ export default function LandingPage() {
           <motion.article whileHover={{ y: -4 }} className="relative overflow-hidden rounded-xl border border-white/10 bg-[#1f1f23]/70 p-6 md:col-span-8">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(255,141,137,0.18),transparent_45%)]" />
             <div className="relative">
-              <p className="text-xs tracking-[0.3em] text-[#ff8d89]">LIVE EXPERIENCE</p>
+              <p className="text-xs tracking-[0.3em] text-[var(--accent-primary)]">LIVE EXPERIENCE</p>
               <h4 className="mt-2 text-3xl font-black">Proximos Conciertos</h4>
               <div className="mt-5 flex flex-wrap gap-4">
                 {concerts.map((concert) => (
                   <motion.div key={concert.title} whileHover={{ y: -3 }} className="min-w-[190px] rounded-lg border border-white/10 bg-[#25252a]/70 p-4">
-                    <p className="text-xs text-cyan-300">{concert.date}</p>
+                    <p className="text-xs text-[var(--accent-primary)]">{concert.date}</p>
                     <p className="mt-1 font-bold">{concert.title}</p>
                     <p className="text-xs text-white/45">{concert.place}</p>
                   </motion.div>
@@ -255,35 +255,35 @@ export default function LandingPage() {
           </motion.div>
 
           <div>
-            <p className="text-xs tracking-[0.3em] text-[#ff8d89]">SOCIAL EXPERIENCE</p>
+            <p className="text-xs tracking-[0.3em] text-[var(--accent-primary)]">SOCIAL EXPERIENCE</p>
             <h5 className="mt-2 text-5xl font-black leading-tight">
-              Musica que nos <span className="text-[#ff8d89] italic">Une.</span>
+              Musica que nos <span className="text-[var(--accent-primary)] italic">Une.</span>
             </h5>
-            <p className="mt-6 max-w-xl text-[#acaaae]">
+            <p className="mt-6 max-w-xl text-[var(--app-muted)]">
               Encuentra a tu MusicTwins, comparte historias musicales y crea playlists colaborativas que son bandas sonoras para tu tribu.
             </p>
             <ul className="mt-6 space-y-3 text-sm">
-              <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-cyan-300" /> Twin Matchmaking System</li>
-              <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#ff8d89]" /> Instant Share Vibe Cards</li>
+              <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[var(--accent-primary)]" /> Twin Matchmaking System</li>
+              <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[var(--app-text)]" /> Instant Share Vibe Cards</li>
             </ul>
           </div>
         </div>
       </motion.section>
 
       <motion.section {...fadeUp} className="mx-auto w-full max-w-[1536px] px-6 py-24 md:px-12">
-        <p className="text-xs tracking-[0.3em] text-cyan-300">YOUR VINYL ARCHIVE</p>
-        <h5 className="mt-2 text-5xl font-black">Tu Coleccion <span className="italic text-[#ff8d89]">Digital.</span></h5>
+        <p className="text-xs tracking-[0.3em] text-[var(--accent-primary)]">YOUR VINYL ARCHIVE</p>
+        <h5 className="mt-2 text-5xl font-black">Tu Coleccion <span className="italic text-[var(--accent-primary)]">Digital.</span></h5>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
           {collection.map((item) => (
-            <motion.article key={item.title} whileHover={{ y: -5 }} className={`rounded-xl border border-white/10 bg-gradient-to-br ${item.tone} p-4`}>
+            <motion.article key={item.title} whileHover={{ y: -5 }} className="rounded-xl border border-[var(--app-border)] bg-[var(--app-surface)] p-4">
               <div className="flex items-center gap-4">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/20 bg-black">
                   <img src={viniloImage} alt={`Vinilo ${item.title}`} className="h-full w-full object-cover" />
                 </div>
                 <div>
                   <h6 className="text-lg font-bold leading-tight">{item.title}</h6>
-                  <p className="text-sm text-[#acaaae]">{item.artist}</p>
+                  <p className="text-sm text-[var(--app-muted)]">{item.artist}</p>
                 </div>
               </div>
             </motion.article>
@@ -293,12 +293,12 @@ export default function LandingPage() {
 
       <motion.section {...fadeUp} id="contacto" className="mx-auto flex w-full max-w-[1536px] flex-col items-center px-6 pb-24 pt-4 text-center md:px-12">
         <h5 className="text-5xl font-black leading-tight md:text-7xl">
-          Listo para el <span className="text-[#ff8d89]">Ritmo?</span>
+          Listo para el <span className="text-[var(--accent-primary)]">Ritmo?</span>
         </h5>
-        <p className="mt-6 max-w-xl text-[#acaaae]">Unete a la comunidad de melomanos mas avanzada del mundo.</p>
+        <p className="mt-6 max-w-xl text-[var(--app-muted)]">Unete a la comunidad de melomanos mas avanzada del mundo.</p>
         <motion.button
           onClick={() => AuthService.loginWithSpotify()}
-          className="mt-10 rounded-full bg-[#ff8d89] px-9 py-4 text-base font-black text-black shadow-[0_14px_40px_rgba(255,141,137,0.35)]"
+          className="mt-10 border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.14)] px-9 py-4 text-base font-black uppercase tracking-[0.06em] text-[var(--app-text)]"
           whileHover={{ y: -3, scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -308,7 +308,7 @@ export default function LandingPage() {
 
       <footer className="border-t border-white/10 px-6 py-6 text-xs text-[#7d7d85] md:px-12">
         <div className="mx-auto flex w-full max-w-[1536px] flex-wrap items-center justify-between gap-3">
-          <p className="font-black text-[#ff8d89]">MusicTwins</p>
+          <p className="font-black text-[var(--accent-primary)]">MusicTwins</p>
           <p>hello@musictwins.com</p>
           <p>2026 ALL RIGHTS RESERVED</p>
         </div>
