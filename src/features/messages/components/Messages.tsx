@@ -41,8 +41,8 @@ function InitialBadge({ name, avatarUrl, online, size = 'h-10 w-10' }: { name: s
   if (avatarUrl) {
     return (
       <div className="relative shrink-0">
-        <img src={avatarUrl} alt={name} className={`${size} rounded-2xl object-cover`} />
-        {online && <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-slate-950 bg-[#67e8f9]" />}
+        <img src={avatarUrl} alt={name} className={`${size} border border-[var(--app-border)] object-cover`} />
+        {online && <span className="absolute -bottom-1 -right-1 h-3 w-3 border border-[var(--app-surface)] bg-[var(--accent-primary)]" />}
       </div>
     )
   }
@@ -56,25 +56,25 @@ function InitialBadge({ name, avatarUrl, online, size = 'h-10 w-10' }: { name: s
 
   return (
     <div className="relative shrink-0">
-      <div className={`grid ${size} place-items-center rounded-2xl bg-gradient-to-br from-[#22d3ee]/60 to-[#67e8f9]/35 font-display text-xs font-bold text-white`}>
+      <div className={`grid ${size} place-items-center border border-[var(--app-border)] bg-[var(--app-surface-2)] font-display text-xs font-bold text-[var(--app-text)]`}>
         {initials}
       </div>
-      {online && <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-slate-950 bg-[#67e8f9]" />}
+      {online && <span className="absolute -bottom-1 -right-1 h-3 w-3 border border-[var(--app-surface)] bg-[var(--accent-primary)]" />}
     </div>
   )
 }
 
 function SongCard({ song }: { song: NonNullable<Message['song']> }) {
   return (
-    <div className="flex max-w-[260px] items-center gap-2 rounded-2xl border border-[#ff8d89]/25 bg-[#22d3ee]/25 p-3">
-      <span className="grid h-8 w-8 place-items-center rounded-xl bg-[#22d3ee]/35 text-[#fff8ef]">
+    <div className="flex max-w-[260px] items-center gap-2 border border-[var(--app-border)] bg-[var(--app-surface-2)] p-3">
+      <span className="grid h-8 w-8 place-items-center border border-[var(--app-border)] bg-[var(--app-bg)] text-[var(--accent-primary)]">
         <UilMusic size={16} />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-white">{song.title}</p>
-        <p className="truncate text-xs text-slate-300/75">{song.artist}</p>
+        <p className="truncate text-sm font-semibold uppercase tracking-[0.03em] text-[var(--app-text)]">{song.title}</p>
+        <p className="truncate text-xs text-[var(--app-muted)]">{song.artist}</p>
       </div>
-      <span className="rounded-full bg-white/10 p-1 text-slate-200">
+      <span className="border border-[var(--app-border)] bg-[var(--app-bg)] p-1 text-[var(--app-text)]">
         <UilPlay size={14} />
       </span>
     </div>
@@ -241,41 +241,41 @@ export default function Messages() {
   return (
     <AppShell>
       <div className="mx-auto grid h-[calc(100vh-8rem)] w-full max-w-6xl gap-4 px-4 py-5 md:px-6 md:py-8 lg:grid-cols-[320px_minmax(0,1fr)] overflow-hidden">
-        <aside className="rounded-3xl border border-white/12 bg-[#25252a]/70">
-          <div className="border-b border-white/10 p-4">
-            <h1 className="font-display text-2xl font-black text-white">Mensajes</h1>
+        <aside className="border border-[var(--app-border)] bg-[var(--app-surface)]">
+          <div className="border-b border-[var(--app-border)] p-4">
+            <h1 className="type-section font-display font-black uppercase text-[var(--app-text)]">Mensajes</h1>
 
             <label className="relative mt-3 block">
-              <UilSearch size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-300/65" />
+              <UilSearch size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--app-muted)]" />
               <input
                 value={query}
                 onChange={event => setQuery(event.target.value)}
-                className="w-full rounded-2xl border border-white/15 bg-white/5 py-2 pl-9 pr-3 text-sm text-slate-100 placeholder:text-slate-400/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#67e8f9]"
+                className="w-full border border-[var(--app-border)] bg-[var(--app-bg)] py-2 pl-9 pr-3 text-sm text-[var(--app-text)] placeholder:text-[var(--app-muted)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
                 placeholder="Buscar conversacion"
               />
             </label>
           </div>
 
           <div className="h-[calc(100%-120px)] overflow-y-auto no-scrollbar">
-            {filteredConversations.length === 0 && <p className="p-4 text-center text-sm text-slate-400">0 conversaciones encontradas</p>}
+            {filteredConversations.length === 0 && <p className="p-4 text-center text-sm text-[var(--app-muted)]">0 conversaciones encontradas</p>}
             {filteredConversations.map(conversation => (
               <button
                 key={conversation.id}
                 onClick={() => setActiveConvId(conversation.id)}
-                className={`flex w-full items-center gap-3 border-b border-white/5 p-4 text-left transition-colors ${
-                  conversation.id === activeConvId ? 'bg-white/10' : 'hover:bg-white/6'
+                className={`flex w-full items-center gap-3 border-b border-[var(--app-border)] p-4 text-left transition-colors ${
+                  conversation.id === activeConvId ? 'bg-[var(--app-surface-2)]' : 'hover:bg-[var(--app-panel)]'
                 }`}
               >
                 <InitialBadge name={conversation.name} avatarUrl={conversation.avatarUrl} online={conversation.online} />
                 <div className="min-w-0 flex-1">
                   <div className="mb-1 flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-semibold text-white">{conversation.name}</p>
-                    <span className="text-[11px] uppercase tracking-[0.14em] text-slate-300/60">{conversation.time}</span>
+                    <p className="truncate text-sm font-semibold uppercase tracking-[0.03em] text-[var(--app-text)]">{conversation.name}</p>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--app-muted)]">{conversation.time}</span>
                   </div>
-                  <p className="truncate text-xs text-slate-300/75">{conversation.lastMsg}</p>
+                  <p className="truncate text-xs text-[var(--app-muted)]">{conversation.lastMsg}</p>
                 </div>
                 {conversation.unread > 0 && (
-                  <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#22d3ee] px-1 text-[11px] font-semibold text-white">
+                  <span className="inline-flex h-5 min-w-5 items-center justify-center border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.14)] px-1 text-[11px] font-semibold text-[var(--app-text)]">
                     {conversation.unread}
                   </span>
                 )}
@@ -284,22 +284,22 @@ export default function Messages() {
           </div>
         </aside>
 
-        <section className="flex h-full flex-col rounded-3xl border border-white/12 bg-[#1f1f23]/70 overflow-hidden">
+        <section className="flex h-full flex-col overflow-hidden border border-[var(--app-border)] bg-[var(--app-surface)]">
           {activeConversation ? (
             <>
-              <header className="flex items-center gap-3 border-b border-white/10 p-4">
+              <header className="flex items-center gap-3 border-b border-[var(--app-border)] p-4">
                 <InitialBadge name={activeConversation.name} avatarUrl={activeConversation.avatarUrl} online={activeConversation.online} size="h-9 w-9" />
                 <div>
-                  <p className="font-display text-lg font-bold text-white">{activeConversation.name}</p>
-                  <p className="text-xs text-slate-300/65">{activeConversation.online ? 'En linea' : 'Desconectado'}</p>
+                  <p className="font-display text-xl font-bold uppercase text-[var(--app-text)]">{activeConversation.name}</p>
+                  <p className="text-xs text-[var(--app-muted)]">{activeConversation.online ? 'En linea' : 'Desconectado'}</p>
                 </div>
-                <button className="ml-auto rounded-xl bg-white/10 p-2 text-slate-100" onClick={() => router.push('/feed')}>
+                <button className="ml-auto border border-[var(--app-border)] bg-[var(--app-bg)] p-2 text-[var(--app-text)]" onClick={() => router.push('/feed')}>
                   <UilMessage size={16} />
                 </button>
               </header>
 
               <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
-                {activeMessages.length === 0 && <div className="text-center text-sm text-slate-500 mt-10">Comienza a chatear.</div>}
+                {activeMessages.length === 0 && <div className="mt-10 text-center text-sm text-[var(--app-muted)]">Comienza a chatear.</div>}
                 {activeMessages.map(message => (
                   <div key={message.id} className={`flex ${message.from === 'me' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[75%] ${message.from === 'me' ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
@@ -309,22 +309,22 @@ export default function Messages() {
                         <div
                           className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                             message.from === 'me'
-                              ? 'rounded-tr-sm bg-gradient-to-r from-[#22d3ee] to-[#ff8d89] text-white'
-                              : 'rounded-tl-sm border border-white/15 bg-white/8 text-slate-100'
+                              ? 'border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.16)] text-[var(--app-text)]'
+                              : 'border border-[var(--app-border)] bg-[var(--app-bg)] text-[var(--app-text)]'
                           }`}
                         >
                           {message.text}
                         </div>
                       )}
-                      <span className="text-[11px] uppercase tracking-[0.12em] text-slate-300/55">{message.time}</span>
+                      <span className="text-[11px] uppercase tracking-[0.12em] text-[var(--app-muted)]">{message.time}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <footer className="border-t border-white/10 p-4">
+              <footer className="border-t border-[var(--app-border)] p-4">
                 <div className="flex items-center gap-2">
-                  <button className="rounded-xl bg-white/10 p-2 text-slate-100 transition-colors hover:bg-white/15" aria-label="Adjuntar pista">
+                  <button className="border border-[var(--app-border)] bg-[var(--app-bg)] p-2 text-[var(--app-text)] transition-colors hover:border-[var(--accent-primary)]" aria-label="Adjuntar pista">
                     <UilUserCircle size={18} />
                   </button>
                   <input
@@ -334,12 +334,12 @@ export default function Messages() {
                       if (event.key === 'Enter') sendMessage()
                     }}
                     placeholder="Escribe un mensaje"
-                    className="flex-1 rounded-2xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-slate-400/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#67e8f9]"
+                    className="flex-1 border border-[var(--app-border)] bg-[var(--app-bg)] px-4 py-2.5 text-sm text-[var(--app-text)] placeholder:text-[var(--app-muted)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
                   />
                   <button
                     onClick={sendMessage}
                     disabled={!input.trim()}
-                    className="inline-flex items-center gap-1 rounded-2xl bg-[#ff8d89] px-4 py-2 text-sm font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex items-center gap-1 border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.14)] px-4 py-2 text-sm font-semibold uppercase tracking-[0.04em] text-[var(--app-text)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <UilLocationArrow size={15} />
                     Enviar
@@ -348,7 +348,7 @@ export default function Messages() {
               </footer>
             </>
           ) : (
-            <div className="flex flex-1 items-center justify-center p-10 text-center text-slate-400">
+            <div className="flex flex-1 items-center justify-center p-10 text-center text-[var(--app-muted)]">
                <p>No tienes conversaciones activas.<br/>Busca nuevos gemelos musicales en tu feed.</p>
             </div>
           )}

@@ -67,34 +67,34 @@ function AuthLoadingContent() {
   }, [router, searchParams, setUser, setAuthenticated])
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0e0e11] text-[#fff8ef] px-4 py-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_22%,rgba(103, 232, 249,0.42),transparent_30%),radial-gradient(circle_at_78%_20%,rgba(255, 141, 137,0.26),transparent_28%),radial-gradient(circle_at_50%_90%,rgba(212,162,89,0.2),transparent_35%)]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-app-background px-4 py-8 text-[var(--app-text)]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(transparent_31px,rgba(240,237,230,0.04)_32px),linear-gradient(90deg,transparent_31px,rgba(240,237,230,0.04)_32px)] bg-[length:32px_32px]" />
 
-      <section className="relative w-full max-w-xl rounded-[2rem] border border-white/12 bg-[#1f1f23]/70 p-6 text-slate-100 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
+      <section className="relative w-full max-w-xl border border-[var(--app-border)] bg-[var(--app-surface)] p-6 text-[var(--app-text)] md:p-8">
         <div className="mb-6 flex items-center justify-center">
-          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-[#22d3ee] via-[#ff8d89] to-[#67e8f9] text-slate-950 shadow-[0_10px_30px_rgba(244,114,182,0.45)]">
+          <div className="grid h-16 w-16 place-items-center border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.12)] text-[var(--app-text)]">
             <UilMusic size={30} />
           </div>
         </div>
 
-        <h1 className="text-center font-display text-3xl font-black text-white">MusicTwins</h1>
-        <p className="mt-2 text-center text-sm text-slate-300/75">Preparando un feed unico para tu perfil sonoro</p>
+        <h1 className="type-page text-center font-display font-black uppercase leading-none text-[var(--app-text)]">MusicTwins</h1>
+        <p className="mt-2 text-center text-sm text-[var(--app-muted)]">Preparando un feed unico para tu perfil sonoro</p>
 
         <div className="mt-8 space-y-4">
-          <div className="overflow-hidden rounded-full bg-white/10">
+          <div className="overflow-hidden border border-[var(--app-border)] bg-[var(--app-bg)]">
             <div
-              className="h-2 rounded-full bg-gradient-to-r from-[#22d3ee] via-[#ff8d89] to-[#67e8f9] transition-all duration-150"
+              className="h-2 bg-[var(--accent-primary)] transition-all duration-150"
               style={{ width: `${progress}%` }}
             />
           </div>
 
-          <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-slate-300/65">
+          <div className="flex items-center justify-between text-xs uppercase tracking-[0.18em] text-[var(--app-muted)]">
             <span>{Math.round(progress)}%</span>
             <span>{steps.length} etapas</span>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-[#25252a]/70 p-4">
-            <div className="flex items-center gap-2 text-[#67e8f9]">
+          <div className="border border-[var(--app-border)] bg-[var(--app-bg)] p-4">
+            <div className="flex items-center gap-2 text-[var(--accent-primary)]">
               <UilSpinnerAlt size={16} className="animate-spin" />
               <span className="text-sm font-medium">{steps[stepIndex]}...</span>
             </div>
@@ -120,7 +120,7 @@ function AuthLoadingContent() {
 
 export default function AuthLoading() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0e0e11] text-[#fff8ef]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-text)]" />}>
       <AuthLoadingContent />
     </Suspense>
   )

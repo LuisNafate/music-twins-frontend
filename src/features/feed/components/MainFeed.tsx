@@ -18,7 +18,7 @@ import { FeedItem } from '@/features/feed/types/feed.types'
 
 function AvatarPill({ name, url }: { name: string; url?: string | null }) {
   if (url) {
-    return <img src={url} alt={name} className="h-10 w-10 rounded-2xl object-cover" />
+    return <img src={url} alt={name} className="h-10 w-10 border border-[var(--app-border)] object-cover" />
   }
 
   const initials = name
@@ -29,7 +29,7 @@ function AvatarPill({ name, url }: { name: string; url?: string | null }) {
     .toUpperCase()
 
   return (
-    <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#22d3ee]/60 to-[#67e8f9]/35 font-display text-sm font-bold text-white">
+    <span className="inline-flex h-10 w-10 items-center justify-center border border-[var(--app-border)] bg-[var(--app-surface-2)] font-display text-sm font-bold text-[var(--app-text)]">
       {initials}
     </span>
   )
@@ -81,38 +81,38 @@ function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
 
   return (
     <article
-      className="animate-fade-in-up rounded-3xl border border-white/12 bg-[#25252a]/70 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
+      className="animate-fade-in-up border border-[var(--app-border)] bg-[var(--app-surface)] p-5"
       style={{ animationDelay: `${delay}s` }}
     >
       <div className="flex items-start gap-3">
         <AvatarPill name={card.user.displayName} url={card.user.avatarUrl} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-display text-xl font-bold text-white">{title}</h3>
-            <span className="text-xs uppercase tracking-[0.14em] text-slate-300/60">{timeAgo}</span>
+            <h3 className="font-display text-[clamp(1.2rem,1.1rem+0.5vw,1.6rem)] font-bold uppercase text-[var(--app-text)]">{title}</h3>
+            <span className="text-xs uppercase tracking-[0.14em] text-[var(--app-muted)]">{timeAgo}</span>
           </div>
-          <p className="text-sm text-slate-300/80">{artist} · {album}</p>
+          <p className="text-sm text-[var(--app-muted)]">{artist} · {album}</p>
           {card.track.albumImageUrl && (
-            <div className="mt-3 overflow-hidden rounded-2xl border border-white/10">
+            <div className="mt-3 overflow-hidden border border-[var(--app-border)]">
                <img src={card.track.albumImageUrl} alt={album} className="w-full object-cover max-h-48" />
             </div>
           )}
-          <div className="mt-2 inline-flex items-center gap-1 rounded-full border border-[#67e8f9]/30 bg-[#67e8f9]/18 px-2 py-1 text-xs text-[#e5be85]">
+          <div className="mt-2 inline-flex items-center gap-1 border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.12)] px-2 py-1 text-xs text-[var(--accent-primary)]">
             <UilHeartRate size={13} />
             Listening now
           </div>
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/10 pt-4">
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[var(--app-border)] pt-4">
         {reactions.map(item => (
           <button
             key={item.emoji}
             onClick={() => handleReact(item.emoji)}
-            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs transition-transform active:scale-95 ${
+            className={`inline-flex items-center gap-1 border px-3 py-1.5 text-xs transition-transform active:scale-95 ${
               liked[item.emoji]
-                ? 'border-[#ff8d89]/40 bg-[#22d3ee]/35 text-[#fff8ef]'
-                : 'border-white/15 bg-white/5 text-slate-200/85 hover:bg-white/10'
+                ? 'border-[var(--accent-primary)] bg-[rgba(224,108,26,0.18)] text-[var(--app-text)]'
+                : 'border-[var(--app-border)] bg-[var(--app-panel)] text-[var(--app-muted)] hover:bg-[var(--app-surface-2)]'
             }`}
           >
             <span>{item.emoji}</span>
@@ -123,12 +123,12 @@ function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
         {/* Example to add new reaction */}
         <button 
           onClick={() => handleReact('🔥')}
-          className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1.5 text-xs text-slate-300 transition-colors hover:bg-white/10"
+          className="inline-flex items-center gap-1 border border-[var(--app-border)] bg-[var(--app-panel)] px-2 py-1.5 text-xs text-[var(--app-muted)] transition-colors hover:bg-[var(--app-surface-2)]"
         >
           +
         </button>
 
-        <button className="ml-auto inline-flex items-center gap-1 text-xs text-slate-300/70 transition-colors hover:text-white">
+        <button className="ml-auto inline-flex items-center gap-1 text-xs text-[var(--app-muted)] transition-colors hover:text-[var(--app-text)]">
           <UilShareAlt size={14} />
           Compartir
         </button>
@@ -231,35 +231,35 @@ export default function MainFeed() {
 
   return (
     <AppShell>
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-6 md:px-8 md:py-10">
-        <section className="space-y-12">
+      <div className="mx-auto grid w-full max-w-[1440px] gap-8 px-4 py-6 md:px-8 md:py-10">
+        <section className="space-y-[clamp(var(--space-8),4vw,var(--space-20))]">
           {/* Section 1: Friends Live */}
           <div>
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
-                 <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <h2 className="type-section font-display flex items-center gap-2 font-bold uppercase tracking-[0.02em] text-[var(--app-text)]">
+                 <span className="h-2 w-2 bg-[var(--accent-primary)] animate-pulse" />
                  Escuchando ahora
               </h2>
-              <button onClick={() => router.push('/twin-match')} className="text-xs font-semibold text-[#67e8f9] uppercase tracking-wider hover:underline">Ver todos</button>
+              <button onClick={() => router.push('/twin-match')} className="border border-[var(--app-border)] px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[var(--app-muted)] transition-colors hover:border-[var(--accent-primary)] hover:text-[var(--app-text)]">Ver todos</button>
             </div>
             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
               {friendSummary.length === 0 ? (
-                <div className="flex-1 rounded-3xl border border-white/5 bg-white/5 p-8 text-center text-slate-500 italic">
+                <div className="flex-1 border border-[var(--app-border)] bg-[var(--app-surface)] p-8 text-center text-[var(--app-muted)]">
                   Tus amigos no están escuchando música en este momento.
                 </div>
               ) : friendSummary.map((friend, i) => (
-                <div key={i} className="flex min-w-[200px] shrink-0 flex-col items-center gap-3 rounded-3xl border border-white/10 bg-[#1f1f23]/60 p-4 transition-transform hover:scale-[1.02]">
+                <div key={i} className="flex min-w-[200px] shrink-0 flex-col items-center gap-3 border border-[var(--app-border)] bg-[var(--app-surface)] p-4 transition-colors hover:bg-[var(--app-surface-2)]">
                   <div className="relative">
                     {friend.avatarUrl ? (
-                      <img src={friend.avatarUrl} className="h-16 w-16 rounded-full object-cover shadow-lg" alt="" />
+                      <img src={friend.avatarUrl} className="h-16 w-16 border border-[var(--app-border)] object-cover" alt="" />
                     ) : (
-                      <div className="h-16 w-16 rounded-full bg-gradient-to-br from-white/10 to-white/5" />
+                      <div className="h-16 w-16 border border-[var(--app-border)] bg-[var(--app-bg)]" />
                     )}
-                    <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#1f1f23] bg-green-500 shadow-sm" />
+                    <span className="absolute bottom-0 right-0 h-4 w-4 border border-[var(--app-surface)] bg-[var(--accent-primary)]" />
                   </div>
                   <div className="text-center min-w-0 w-full mt-2">
-                    <p className="truncate text-sm font-bold text-white">{friend.displayName}</p>
-                    <p className="truncate text-[10px] text-white/50 italic">
+                    <p className="truncate text-sm font-bold uppercase tracking-[0.04em] text-[var(--app-text)]">{friend.displayName}</p>
+                    <p className="truncate text-[10px] text-[var(--app-muted)]">
                       {friend.trackName || 'Escuchando música'}
                     </p>
                   </div>
@@ -271,28 +271,28 @@ export default function MainFeed() {
           {/* Section 2: User Favorites / Top Tracks */}
           <div>
             <div className="mb-6">
-              <h2 className="font-display text-2xl font-bold text-white">Tus favoritos recientes</h2>
-              <p className="text-sm text-slate-400 mt-1">Lo que más has escuchado en Spotify estos días.</p>
+              <h2 className="type-section font-display font-bold uppercase text-[var(--app-text)]">Tus favoritos recientes</h2>
+              <p className="mt-1 text-sm text-[var(--app-muted)]">Lo que más has escuchado en Spotify estos días.</p>
             </div>
             <div className="flex gap-5 overflow-x-auto pb-4 no-scrollbar">
               {topTracks.length === 0 ? (
                 Array.from({length: 3}).map((_, i) => (
-                  <div key={i} className="h-40 min-w-[120px] animate-pulse rounded-3xl bg-white/5" />
+                  <div key={i} className="h-40 min-w-[120px] animate-pulse border border-[var(--app-border)] bg-[var(--app-surface)]" />
                 ))
               ) : topTracks.map((track, i) => (
                 <div key={i} className="group relative min-w-[155px] max-w-[155px] shrink-0">
-                  <div className="aspect-square overflow-hidden rounded-2xl border border-white/10 shadow-lg transition-transform group-hover:scale-105">
+                  <div className="aspect-square overflow-hidden border border-[var(--app-border)] transition-transform group-hover:scale-[1.01]">
                     {track.imageUrl || track.albumImageUrl ? (
                        <img src={track.imageUrl || track.albumImageUrl} className="h-full w-full object-cover" alt="" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-white/5 text-slate-600">
+                      <div className="flex h-full w-full items-center justify-center bg-[var(--app-bg)] text-[var(--app-muted)]">
                         <UilMusic size={32} />
                       </div>
                     )}
                   </div>
                   <div className="mt-3 min-w-0">
-                    <p className="truncate text-sm font-bold text-white">{track.name}</p>
-                    <p className="truncate text-xs text-slate-400">{track.artist}</p>
+                    <p className="truncate text-sm font-bold uppercase tracking-[0.03em] text-[var(--app-text)]">{track.name}</p>
+                    <p className="truncate text-xs text-[var(--app-muted)]">{track.artist}</p>
                   </div>
                 </div>
               ))}
@@ -302,11 +302,11 @@ export default function MainFeed() {
           {/* Section 3: Trending in Network */}
           <div>
             <div className="mb-6">
-              <h2 className="font-display text-2xl font-bold text-white">Lo más escuchado en tu red</h2>
-              <p className="text-sm text-slate-400 mt-1">Canciones populares entre tus amigos recientemente.</p>
-              <div className="space-y-6 rounded-3xl border border-white/5 bg-white/2 p-6 backdrop-blur-md">
+              <h2 className="type-section font-display font-bold uppercase text-[var(--app-text)]">Lo más escuchado en tu red</h2>
+              <p className="mt-1 text-sm text-[var(--app-muted)]">Canciones populares entre tus amigos recientemente.</p>
+              <div className="mt-5 space-y-6 border border-[var(--app-border)] bg-[var(--app-surface)] p-6">
               {trendingTracks.length === 0 ? (
-                <div className="rounded-2xl border border-white/5 bg-white/5 p-12 text-center text-slate-500 italic">
+                <div className="border border-[var(--app-border)] bg-[var(--app-bg)] p-12 text-center text-[var(--app-muted)]">
                   No hay suficientes datos de tus amigos para mostrar tendencias aún.
                 </div>
               ) : (
@@ -317,22 +317,22 @@ export default function MainFeed() {
                     <div key={i} className="group relative">
                       <div className="mb-2 flex items-center justify-between gap-4">
                         <div className="flex items-center gap-4 min-w-0 flex-1">
-                           <span className="text-xs font-black text-white/20 w-4 italic">{i + 1}</span>
-                           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-white/10 shadow-lg">
+                           <span className="w-4 text-xs font-black text-[var(--app-muted)]">{i + 1}</span>
+                           <div className="h-10 w-10 shrink-0 overflow-hidden border border-[var(--app-border)]">
                              <img src={track.albumImageUrl || '/song-placeholder.png'} className="h-full w-full object-cover" alt="" />
                            </div>
                            <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-bold text-white group-hover:text-[#67e8f9] transition-colors">{track.name}</p>
-                              <p className="truncate text-[10px] uppercase tracking-wider text-slate-500">{track.artist}</p>
+                              <p className="truncate text-sm font-bold uppercase tracking-[0.03em] text-[var(--app-text)] group-hover:text-[var(--accent-primary)] transition-colors">{track.name}</p>
+                              <p className="truncate text-[10px] uppercase tracking-wider text-[var(--app-muted)]">{track.artist}</p>
                            </div>
                         </div>
                         <div className="text-right">
-                          <span className="text-xs font-mono font-bold text-[#67e8f9] bg-[#67e8f9]/10 px-2 py-0.5 rounded-full">{track.playCount} <span className="text-[10px] opacity-70">REPROS</span></span>
+                          <span className="border border-[var(--app-border)] bg-[var(--app-bg)] px-2 py-0.5 text-xs font-bold text-[var(--accent-primary)]">{track.playCount} <span className="text-[10px] opacity-70">REPROS</span></span>
                         </div>
                       </div>
-                      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                      <div className="relative h-1.5 w-full overflow-hidden bg-[var(--app-bg)]">
                          <div 
-                           className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-[#22d3ee] to-[#67e8f9] shadow-[0_0_12px_rgba(103,232,249,0.3)] transition-all duration-1000 ease-out"
+                           className="absolute left-0 top-0 h-full bg-[var(--accent-primary)] transition-all duration-1000 ease-out"
                            style={{ width: `${percentage}%` }}
                          />
                       </div>
@@ -348,27 +348,27 @@ export default function MainFeed() {
           <div className="grid gap-8 xl:grid-cols-[1fr_320px]">
             <div className="space-y-6">
               <div className="mb-2">
-                <h2 className="font-display text-2xl font-bold text-white">Actividad reciente</h2>
-                <p className="text-sm text-slate-400 mt-1">Historial de música de tu red social.</p>
+                <h2 className="type-section font-display font-bold uppercase text-[var(--app-text)]">Actividad reciente</h2>
+                <p className="mt-1 text-sm text-[var(--app-muted)]">Historial de música de tu red social.</p>
               </div>
 
           <div className="space-y-4">
             {loading ? (
               [1, 2, 3].map(i => (
-                <div key={i} className="h-20 animate-pulse rounded-2xl bg-white/5" />
+                <div key={i} className="h-20 animate-pulse border border-[var(--app-border)] bg-[var(--app-surface)]" />
               ))
             ) : feedData.length === 0 ? (
-              <p className="p-10 text-center text-sm text-slate-400">No hay actividad reciente.</p>
+              <p className="p-10 text-center text-sm text-[var(--app-muted)]">No hay actividad reciente.</p>
             ) : (
               feedData.map((item, i) => (
-                <article key={i} className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/5">
-                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl">
+                <article key={i} className="grid grid-cols-[48px_minmax(0,1fr)] items-center gap-4 border-b border-[var(--app-border)] bg-[var(--app-surface)] p-3 transition-colors hover:bg-[var(--app-surface-2)]">
+                  <div className="h-12 w-12 shrink-0 overflow-hidden border border-[var(--app-border)]">
                     <img src={item.track?.albumImageUrl || '/song-placeholder.png'} className="h-full w-full object-cover" alt="" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-white">{item.track?.name}</p>
-                    <p className="truncate text-xs text-slate-400">{item.track?.artist}</p>
-                    <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#67e8f9]/70">Escuchado por {item.user?.displayName}</p>
+                    <p className="truncate text-sm font-bold uppercase tracking-[0.03em] text-[var(--app-text)]">{item.track?.name}</p>
+                    <p className="truncate text-xs text-[var(--app-muted)]">{item.track?.artist}</p>
+                    <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent-primary)]">Escuchado por {item.user?.displayName}</p>
                   </div>
                 </article>
               ))
@@ -376,27 +376,27 @@ export default function MainFeed() {
           </div>
         </div>
 
-        <aside className="space-y-8">
-          <section className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-6 shadow-xl">
+        <aside className="sticky top-0 space-y-8 self-start">
+          <section className="border border-[var(--app-border)] bg-[var(--app-surface)] p-6">
             <div className="mb-4 flex items-center justify-between">
-              <div className="inline-flex items-center gap-2 text-[#e5be85]">
+              <div className="inline-flex items-center gap-2 text-[var(--accent-primary)]">
                 <UilMusic size={18} />
                 <p className="text-xs font-bold uppercase tracking-[0.2em]">En vivo (Tú)</p>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/5 bg-[#25252a]/40 p-4">
+            <div className="border border-[var(--app-border)] bg-[var(--app-bg)] p-4">
               {nowPlaying?.imageUrl ? (
-                 <div className="mb-4 overflow-hidden rounded-xl shadow-lg">
+                 <div className="mb-4 overflow-hidden border border-[var(--app-border)]">
                    <img src={nowPlaying.imageUrl} className="w-full object-cover aspect-square" alt="" />
                  </div>
               ) : (
-                <div className="mb-4 flex aspect-square items-center justify-center rounded-xl bg-white/5 text-slate-600">
+                <div className="mb-4 flex aspect-square items-center justify-center border border-[var(--app-border)] bg-[var(--app-surface)] text-[var(--app-muted)]">
                   <UilMusic size={40} />
                 </div>
               )}
-              <p className="truncate font-display text-lg font-bold text-white">{nowPlaying?.name || 'Nada sonando'}</p>
-              <p className="truncate text-sm text-[#67e8f9]">{nowPlaying?.artist || 'Abre Spotify'}</p>
+              <p className="truncate font-display text-[clamp(1.1rem,1rem+0.4vw,1.35rem)] font-bold uppercase text-[var(--app-text)]">{nowPlaying?.name || 'Nada sonando'}</p>
+              <p className="truncate text-sm text-[var(--accent-primary)]">{nowPlaying?.artist || 'Abre Spotify'}</p>
               
               {nowPlaying && (
                 <div className="mt-4 flex h-6 items-end gap-1">
@@ -412,16 +412,16 @@ export default function MainFeed() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-6">
-            <div className="mb-4 inline-flex items-center gap-2 text-[#f0b7a9]">
+          <section className="border border-[var(--app-border)] bg-[var(--app-surface)] p-6">
+            <div className="mb-4 inline-flex items-center gap-2 text-[var(--accent-primary)]">
               <UilMessage size={18} />
               <p className="text-xs font-bold uppercase tracking-[0.16em]">Notificaciones</p>
             </div>
             <div className="space-y-3">
               {activities.length === 0 ? (
-                 <p className="text-slate-500 text-xs italic">Sin actividad nueva.</p>
+                 <p className="text-xs text-[var(--app-muted)]">Sin actividad nueva.</p>
               ) : activities.map((act, i) => (
-                 <p key={i} className="rounded-2xl bg-white/5 px-4 py-3 text-xs leading-relaxed text-slate-200">{act}</p>
+                 <p key={i} className="border border-[var(--app-border)] bg-[var(--app-bg)] px-4 py-3 text-xs leading-relaxed text-[var(--app-text)]">{act}</p>
               ))}
             </div>
           </section>

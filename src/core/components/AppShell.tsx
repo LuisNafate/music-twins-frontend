@@ -28,10 +28,10 @@ function NavItem({ icon: Icon, label, active, onClick }: NavItemProps) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200 group ${
+      className={`group grid w-full grid-cols-[18px_minmax(0,1fr)_10px] items-center gap-3 border-l-2 px-3 py-3 text-left text-sm uppercase tracking-[0.08em] transition-colors duration-150 ${
         active
-          ? 'bg-white/15 text-white border border-white/20 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]'
-          : 'text-slate-300/80 hover:text-white hover:bg-white/10 border border-transparent'
+          ? 'border-l-[var(--accent-primary)] bg-[var(--app-surface-2)] text-[var(--app-text)]'
+          : 'border-l-transparent text-[var(--app-muted)] hover:border-l-[var(--app-border)] hover:bg-[var(--app-panel)] hover:text-[var(--app-text)]'
       }`}
       aria-label={label}
       aria-current={active ? 'page' : undefined}
@@ -39,7 +39,7 @@ function NavItem({ icon: Icon, label, active, onClick }: NavItemProps) {
       <Icon size={18} className={`transition-opacity ${active ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'}`} />
       <span>{label}</span>
       {active && (
-        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#67e8f9] animate-pulse" />
+        <span className="ml-auto h-2 w-2 bg-[var(--accent-primary)]" />
       )}
     </button>
   )
@@ -165,35 +165,34 @@ export default function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#0e0e11] text-[#fff8ef] text-slate-100">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(103, 232, 249,0.32),transparent_34%),radial-gradient(circle_at_80%_25%,rgba(255, 141, 137,0.22),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(103, 232, 249,0.2),transparent_35%)]" />
+    <div className="relative min-h-screen w-full overflow-hidden bg-app-background text-[var(--app-text)]">
 
-      <div className="relative mx-auto flex h-screen w-full max-w-[1500px] overflow-hidden pb-20 md:pb-0">
-        <aside className="hidden w-64 min-w-[16rem] max-w-[16rem] shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl md:flex md:flex-col sticky top-0 h-screen overflow-hidden">
+      <div className="relative mx-auto grid h-screen w-full max-w-[1600px] grid-cols-1 overflow-hidden pb-20 md:grid-cols-[260px_minmax(0,1fr)] md:pb-0">
+        <aside className="sticky top-0 hidden h-screen overflow-hidden border-r border-[var(--app-border)] bg-[var(--app-surface)] md:flex md:flex-col">
           <div className="flex h-full flex-col justify-between py-4">
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-3 border-b border-white/10 px-5 pb-4">
+              <div className="flex flex-col gap-3 border-b border-[var(--app-border)] px-5 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-[#22d3ee] to-[#67e8f9] text-slate-100 shadow-[0_0_24px_rgba(103, 232, 249,0.4)]">
+              <div className="flex h-10 w-10 items-center justify-center border border-[var(--app-border)] bg-[var(--app-bg)] text-[var(--app-text)]">
                 <UilHeadphones size={20} />
               </div>
               <div>
-                <p className="font-display text-2xl font-semibold tracking-[0.08em]">MusicTwins</p>
-                <p className="text-[11px] uppercase tracking-[0.25em] text-[#67e8f9]/80">Audio Society</p>
+                <p className="font-display text-3xl leading-none tracking-[0.08em]">MusicTwins</p>
+                <p className="text-[11px] uppercase tracking-[0.25em] text-[var(--app-muted)]">Audio Society</p>
               </div>
             </div>
 
             {/* User Profile Hook */}
             {user && (
-              <div className="mt-2 flex items-center gap-3 rounded-2xl bg-white/5 p-3 outline outline-1 outline-white/10">
+              <div className="mt-2 flex items-center gap-3 border border-[var(--app-border)] bg-[var(--app-bg)] p-3">
                 {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt="Avatar" className="h-9 w-9 rounded-full object-cover shadow-md" />
+                  <img src={user.avatarUrl} alt="Avatar" className="h-9 w-9 object-cover" />
                 ) : (
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[#22d3ee]/60 to-[#67e8f9]/35 text-xs font-bold text-white">
+                  <div className="grid h-9 w-9 place-items-center border border-[var(--app-border)] bg-[var(--app-surface-2)] text-xs font-bold text-[var(--app-text)]">
                     {(user.displayName || 'U').charAt(0).toUpperCase()}
                   </div>
                 )}
-                <p className="truncate text-sm font-semibold text-white">{user.displayName || 'Twin User'}</p>
+                <p className="truncate text-sm font-semibold uppercase tracking-[0.05em] text-[var(--app-text)]">{user.displayName || 'Twin User'}</p>
               </div>
             )}
           </div>
@@ -210,33 +209,33 @@ export default function AppShell({ children }: AppShellProps) {
             ))}
           </nav>
 
-          <div className="mx-3 mb-2 rounded-xl border border-[#67e8f9]/20 bg-black/30 p-3">
-            <div className="mb-1.5 flex items-center gap-2 text-[#e5be85]">
+          <div className="mx-3 mb-2 border border-[var(--app-border)] bg-[var(--app-bg)] p-3">
+            <div className="mb-2 flex items-center gap-2 text-[var(--accent-primary)]">
               <UilMusic size={14} />
               <span className="text-[10px] uppercase tracking-[0.15em]">En vivo</span>
             </div>
             <div className="flex items-center gap-3">
               {nowPlaying?.imageUrl && (
-                <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-white/10">
+                <div className="h-10 w-10 shrink-0 overflow-hidden border border-[var(--app-border)]">
                   <img src={nowPlaying.imageUrl} alt={nowPlaying.album} className="h-full w-full object-cover" />
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[12px] font-bold text-white">{nowPlaying?.name || 'Silencio'}</p>
-                <p className="truncate text-[10px] text-slate-400">{nowPlaying?.artist || 'Spotify'}</p>
+                <p className="truncate text-[12px] font-bold uppercase tracking-[0.03em] text-[var(--app-text)]">{nowPlaying?.name || 'Silencio'}</p>
+                <p className="truncate text-[10px] text-[var(--app-muted)]">{nowPlaying?.artist || 'Spotify'}</p>
               </div>
             </div>
           </div>
 
           </div>
 
-          <div className="border-t border-white/10 p-4">
+          <div className="border-t border-[var(--app-border)] p-4">
             <button
               onClick={() => {
                 AuthService.logout();
                 router.push('/');
               }}
-              className="flex w-full items-center gap-3 rounded-2xl border border-transparent px-3 py-2.5 text-sm text-slate-300/80 transition-all duration-200 hover:border-[#ff8d89]/50 hover:bg-[#ff8d89]/20 hover:text-[#ffd9cc]"
+              className="flex w-full items-center gap-3 border border-[var(--app-border)] px-3 py-2.5 text-sm uppercase tracking-[0.08em] text-[var(--app-muted)] transition-colors duration-150 hover:border-[var(--accent-primary)] hover:bg-[rgba(224,108,26,0.12)] hover:text-[var(--app-text)]"
             >
               <UilSignOutAlt size={18} />
               <span>Cerrar sesión</span>
@@ -245,15 +244,15 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
       </aside>
 
-        <main className="relative flex-1 h-screen overflow-y-auto custom-scrollbar">
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-56 bg-[linear-gradient(180deg,rgba(255, 141, 137,0.15),transparent)]" />
-          <p className="pointer-events-none absolute left-10 top-4 z-0 hidden select-none font-display text-8xl font-semibold tracking-[0.08em] text-[#67e8f9]/[0.08] md:block">
+        <main className="relative h-screen overflow-y-auto custom-scrollbar">
+          <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(transparent_31px,rgba(240,237,230,0.04)_32px),linear-gradient(90deg,transparent_31px,rgba(240,237,230,0.04)_32px)] bg-[length:32px_32px]" />
+          <p className="pointer-events-none absolute left-10 top-4 z-0 hidden select-none font-display text-[clamp(4.5rem,8vw,8.5rem)] leading-none tracking-[0.08em] text-[rgba(232,230,224,0.05)] md:block">
             {viewHeadline[activeView]}
           </p>
           <div className="relative z-10">{children}</div>
         </main>
 
-        <nav className="fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-2xl border border-white/15 bg-slate-950/80 p-2 backdrop-blur-xl md:hidden">
+        <nav className="fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-1 border border-[var(--app-border)] bg-[var(--app-surface)] p-2 md:hidden">
           {navItems.map(item => {
             const Icon = item.icon
             const active = activeView === item.view
@@ -261,8 +260,8 @@ export default function AppShell({ children }: AppShellProps) {
               <button
                 key={item.view}
                 onClick={() => navigateTo(item.view)}
-                className={`flex flex-1 flex-col items-center gap-1 rounded-xl px-2 py-2 text-[11px] transition-all ${
-                  active ? 'bg-white/15 text-white' : 'text-slate-300/70'
+                className={`flex flex-1 flex-col items-center gap-1 border px-2 py-2 text-[11px] uppercase tracking-[0.08em] transition-colors ${
+                  active ? 'border-[var(--accent-primary)] bg-[rgba(224,108,26,0.16)] text-[var(--app-text)]' : 'border-transparent text-[var(--app-muted)]'
                 }`}
                 aria-label={item.label}
                 aria-current={active ? 'page' : undefined}
@@ -277,7 +276,7 @@ export default function AppShell({ children }: AppShellProps) {
               AuthService.logout();
               router.push('/');
             }}
-            className="rounded-xl px-3 py-2 text-red-200/90"
+            className="border border-[var(--app-border)] px-3 py-2 text-[var(--app-muted)]"
             aria-label="Cerrar sesión"
           >
             <UilSignOutAlt size={18} />
