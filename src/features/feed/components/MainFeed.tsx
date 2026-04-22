@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import html2canvas from 'html2canvas'
 import { useRouter } from 'next/navigation'
 import {
   UilFavorite,
@@ -46,6 +47,7 @@ function getTimeAgo(date: string) {
 }
 
 function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
+  const cardRef = useRef<HTMLDivElement>(null)
   const [reactions, setReactions] = useState(card.reactions || [])
   const [liked, setLiked] = useState<Record<string, boolean>>({})
 
@@ -79,27 +81,51 @@ function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
   const artist = card.track?.artist || 'Unknown Artist'
   const album = card.track?.albumName || 'Unknown Album'
 
+  const handleShare = async () => {
+    if (!cardRef.current) return;
+    try {
+      const canvas = await html2canvas(cardRef.current, {
+        backgroundColor: '#0a0a0a',
+        scale: 2,
+        useCORS: true
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `musictwins-${title.replace(/\\s+/g, '-').toLowerCase()}.png`;
+      a.click();
+    } catch(err) {
+      console.error('Error taking snapshot', err)
+    }
+  }
+
   return (
     <article
-      className="animate-fade-in-up border border-[var(--app-border)] bg-[var(--app-surface)] p-5"
+      className="animate-fade-in-up border border-[var(--app-border)] bg-[var(--app-surface)] p-4"
       style={{ animationDelay: `${delay}s` }}
     >
-      <div className="flex items-start gap-3">
-        <AvatarPill name={card.user.displayName} url={card.user.avatarUrl} />
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-display text-[clamp(1.2rem,1.1rem+0.5vw,1.6rem)] font-bold uppercase text-[var(--app-text)]">{title}</h3>
-            <span className="text-xs uppercase tracking-[0.14em] text-[var(--app-muted)]">{timeAgo}</span>
+      <div ref={cardRef} className="bg-[var(--app-surface)] p-1">
+        <div className="mb-4 flex items-center gap-3">
+          <AvatarPill name={card.user.displayName} url={card.user.avatarUrl} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-bold uppercase tracking-[0.04em] text-[var(--app-text)]">{card.user.displayName}</p>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--app-muted)]">{timeAgo}</p>
           </div>
-          <p className="text-sm text-[var(--app-muted)]">{artist} · {album}</p>
-          {card.track.albumImageUrl && (
-            <div className="mt-3 overflow-hidden border border-[var(--app-border)]">
-               <img src={card.track.albumImageUrl} alt={album} className="w-full object-cover max-h-48" />
+        </div>
+
+        <div className="flex flex-row items-center gap-4">
+          {card.track.albumImageUrl ? (
+            <div className="aspect-square w-24 shrink-0 overflow-hidden border border-[var(--app-border)] sm:w-28">
+               <img src={card.track.albumImageUrl} alt={album} className="h-full w-full object-cover" crossOrigin="anonymous" />
+            </div>
+          ) : (
+            <div className="flex aspect-square w-24 shrink-0 items-center justify-center border border-[var(--app-border)] bg-[var(--app-bg)] text-[var(--app-muted)] sm:w-28">
+              <UilMusic size={24} />
             </div>
           )}
-          <div className="mt-2 inline-flex items-center gap-1 border border-[var(--accent-primary)] bg-[rgba(224,108,26,0.12)] px-2 py-1 text-xs text-[var(--accent-primary)]">
-            <UilHeartRate size={13} />
-            Listening now
+          <div className="min-w-0 flex-1">
+             <h3 className="truncate font-display text-[clamp(1.1rem,1rem+0.4vw,1.3rem)] font-bold uppercase text-[var(--app-text)]">{title}</h3>
+             <p className="truncate text-xs text-[var(--app-muted)]">{artist} · {album}</p>
           </div>
         </div>
       </div>
@@ -128,7 +154,7 @@ function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
           +
         </button>
 
-        <button className="ml-auto inline-flex items-center gap-1 text-xs text-[var(--app-muted)] transition-colors hover:text-[var(--app-text)]">
+        <button onClick={handleShare} className="ml-auto inline-flex items-center gap-1 text-xs text-[var(--app-muted)] transition-colors hover:text-[var(--app-text)]">
           <UilShareAlt size={14} />
           Compartir
         </button>
@@ -153,21 +179,6 @@ export default function MainFeed() {
         const feedRes = await FeedService.getFeed()
         setFeedData(Array.isArray(feedRes) ? feedRes : (feedRes.items || []))
         
-        try {
-          const np = await PlayerService.getNowPlaying()
-          const data = np?.data || np;
-          if (data) {
-             setNowPlaying({
-               name: data.name || data.item?.name,
-               artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
-               album: data.album || data.item?.album?.name,
-               imageUrl: data.imageUrl || data.item?.album?.images?.[0]?.url
-             });
-          }
-        } catch(e) {
-          console.warn("Could not fetch now playing", e)
-        }
-
         try {
           const summary = await FeedService.getSummary();
           setFriendSummary(summary);
@@ -198,13 +209,39 @@ export default function MainFeed() {
     }
     loadData()
 
+    const fetchNowPlaying = async () => {
+      try {
+        const np = await PlayerService.getNowPlaying()
+        const data = np?.data || np;
+        if (data) {
+           setNowPlaying({
+             name: data.name || data.item?.name,
+             artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
+             album: data.album || data.item?.album?.name,
+             imageUrl: data.imageUrl || data.item?.album?.images?.[0]?.url
+           });
+        } else {
+           setNowPlaying(null);
+        }
+      } catch(e) {
+        console.warn("Could not fetch now playing", e)
+      }
+    };
+
+    fetchNowPlaying();
+
     const interval = setInterval(() => {
       FeedService.getSummary()
         .then(summary => setFriendSummary(summary))
         .catch(e => console.warn("Could not refresh friend summary", e))
     }, 30000);
 
-    return () => clearInterval(interval);
+    const npInterval = setInterval(fetchNowPlaying, 30000);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(npInterval);
+    };
   }, [])
 
   useEffect(() => {
@@ -416,6 +453,16 @@ export default function MainFeed() {
                         <p className="truncate text-sm font-bold uppercase tracking-[0.03em] text-[var(--app-text)]">{item.track?.name}</p>
                         <p className="truncate text-xs text-[var(--app-muted)]">{item.track?.artist}</p>
                         <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[var(--accent-primary)]">Escuchado por {item.user?.displayName}</p>
+                        {item.reactions && item.reactions.length > 0 && (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {item.reactions.map(r => (
+                              <span key={r.emoji} className="inline-flex items-center gap-1 rounded border border-[var(--app-border)] bg-[var(--app-surface-2)] px-1.5 py-0.5 text-[10px] text-[var(--app-text)]">
+                                <span>{r.emoji}</span>
+                                <span className="text-[var(--app-muted)]">{r.count}</span>
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                       <span className="text-[10px] uppercase tracking-[0.1em] text-[var(--app-muted)]">{getTimeAgo(item.playedAt)}</span>
                     </article>
