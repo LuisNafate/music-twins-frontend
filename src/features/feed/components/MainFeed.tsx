@@ -344,63 +344,61 @@ export default function MainFeed() {
               <SongCardItem key={card.playbackEventId || index} card={card} delay={index * 0.07} />
             ))}
           </div>
-        </section>
-
-          </div>
-
-          <aside className="space-y-8">
-            <section className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-6 shadow-xl">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="inline-flex items-center gap-2 text-[#e5be85]">
-                  <UilMusic size={18} />
-                  <p className="text-xs font-bold uppercase tracking-[0.2em]">En vivo (Tú)</p>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/5 bg-[#25252a]/40 p-4">
-                {nowPlaying?.imageUrl ? (
-                   <div className="mb-4 overflow-hidden rounded-xl shadow-lg">
-                     <img src={nowPlaying.imageUrl} className="w-full object-cover aspect-square" alt="" />
-                   </div>
-                ) : (
-                  <div className="mb-4 flex aspect-square items-center justify-center rounded-xl bg-white/5 text-slate-600">
-                    <UilMusic size={40} />
-                  </div>
-                )}
-                <p className="truncate font-display text-lg font-bold text-white">{nowPlaying?.name || 'Nada sonando'}</p>
-                <p className="truncate text-sm text-[#67e8f9]">{nowPlaying?.artist || 'Abre Spotify'}</p>
-                
-                {nowPlaying && (
-                  <div className="mt-4 flex h-6 items-end gap-1">
-                    {Array.from({ length: 12 }).map((_, index) => (
-                      <span
-                        key={index}
-                        className="eq-bar"
-                        style={{ height: `${4 + (index % 5) * 4}px`, animationDelay: `${index * 0.05}s` }}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </section>
-
-            <section className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-6">
-              <div className="mb-4 inline-flex items-center gap-2 text-[#f0b7a9]">
-                <UilMessage size={18} />
-                <p className="text-xs font-bold uppercase tracking-[0.16em]">Notificaciones</p>
-              </div>
-              <div className="space-y-3">
-                {activities.length === 0 ? (
-                   <p className="text-slate-500 text-xs italic">Sin actividad nueva.</p>
-                ) : activities.map((act, i) => (
-                   <p key={i} className="rounded-2xl bg-white/5 px-4 py-3 text-xs leading-relaxed text-slate-200">{act}</p>
-                ))}
-              </div>
-            </section>
-          </aside>
         </div>
-      </section>
-    </div>
-  </AppShell>
+
+        <aside className="space-y-8">
+          <section className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="inline-flex items-center gap-2 text-[#e5be85]">
+                <UilMusic size={18} />
+                <p className="text-xs font-bold uppercase tracking-[0.2em]">En vivo (Tú)</p>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/5 bg-[#25252a]/40 p-4">
+              {nowPlaying?.imageUrl ? (
+                 <div className="mb-4 overflow-hidden rounded-xl shadow-lg">
+                   <img src={nowPlaying.imageUrl} className="w-full object-cover aspect-square" alt="" />
+                 </div>
+              ) : (
+                <div className="mb-4 flex aspect-square items-center justify-center rounded-xl bg-white/5 text-slate-600">
+                  <UilMusic size={40} />
+                </div>
+              )}
+              <p className="truncate font-display text-lg font-bold text-white">{nowPlaying?.name || 'Nada sonando'}</p>
+              <p className="truncate text-sm text-[#67e8f9]">{nowPlaying?.artist || 'Abre Spotify'}</p>
+              
+              {nowPlaying && (
+                <div className="mt-4 flex h-6 items-end gap-1">
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <span
+                      key={index}
+                      className="eq-bar"
+                      style={{ height: `${4 + (index % 5) * 4}px`, animationDelay: `${index * 0.05}s` }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-6">
+            <div className="mb-4 inline-flex items-center gap-2 text-[#f0b7a9]">
+              <UilMessage size={18} />
+              <p className="text-xs font-bold uppercase tracking-[0.16em]">Notificaciones</p>
+            </div>
+            <div className="space-y-3">
+              {activities.length === 0 ? (
+                 <p className="text-slate-500 text-xs italic">Sin actividad nueva.</p>
+              ) : activities.map((act, i) => (
+                 <p key={i} className="rounded-2xl bg-white/5 px-4 py-3 text-xs leading-relaxed text-slate-200">{act}</p>
+              ))}
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </div>
+</AppShell>
   )
 }
