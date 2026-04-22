@@ -100,8 +100,8 @@ export default function Messages() {
         
         // Map backend format: { id, user: { id, displayName, avatarUrl }, lastMessage, unreadCount }
         const mapped = list.map((c: any, index: number) => {
-          // Extraer último mensaje de forma segura
-          const lastText = c.lastMessage || 'Empieza una conversación';
+          // Si el backend no envía lastMessage, pero hay actividad, evitamos el texto de error.
+          const lastText = c.lastMessage || (c.unreadCount > 0 ? 'Tienes mensajes nuevos' : 'Chat activo');
           return {
             id: c.id || index.toString(),
             otherUserId: c.user?.id || '',

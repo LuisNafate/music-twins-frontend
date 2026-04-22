@@ -280,7 +280,7 @@ export default function MainFeed() {
                   <div key={i} className="h-40 min-w-[120px] animate-pulse rounded-3xl bg-white/5" />
                 ))
               ) : topTracks.map((track, i) => (
-                <div key={i} className="group relative min-w-[120px] shrink-0">
+                <div key={i} className="group relative min-w-[155px] max-w-[155px] shrink-0">
                   <div className="aspect-square overflow-hidden rounded-2xl border border-white/10 shadow-lg transition-transform group-hover:scale-105">
                     {track.imageUrl || track.albumImageUrl ? (
                        <img src={track.imageUrl || track.albumImageUrl} className="h-full w-full object-cover" alt="" />
@@ -352,25 +352,27 @@ export default function MainFeed() {
                 <p className="text-sm text-slate-400 mt-1">Historial de música de tu red social.</p>
               </div>
 
-          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-            {loading && (
-               <div className="p-8 text-center text-slate-400">Cargando...</div>
+          <div className="space-y-4">
+            {loading ? (
+              [1, 2, 3].map(i => (
+                <div key={i} className="h-20 animate-pulse rounded-2xl bg-white/5" />
+              ))
+            ) : feedData.length === 0 ? (
+              <p className="p-10 text-center text-sm text-slate-400">No hay actividad reciente.</p>
+            ) : (
+              feedData.map((item, i) => (
+                <article key={i} className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/5">
+                  <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl">
+                    <img src={item.track?.albumImageUrl || '/song-placeholder.png'} className="h-full w-full object-cover" alt="" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-white">{item.track?.name}</p>
+                    <p className="truncate text-xs text-slate-400">{item.track?.artist}</p>
+                    <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#67e8f9]/70">Escuchado por {item.user?.displayName}</p>
+                  </div>
+                </article>
+              ))
             )}
-            {!loading && feedData.length === 0 && (
-               <div className="p-8 text-center text-slate-400">No hay actividad reciente.</div>
-            )}
-            {!loading && feedData.map((item, i) => (
-              <article key={i} className="group relative min-w-[140px] max-w-[140px] shrink-0 rounded-2xl border border-white/5 bg-white/2 p-3 transition-all hover:bg-white/10">
-                <div className="aspect-square overflow-hidden rounded-xl mb-3 shadow-md">
-                  <img src={item.track?.albumImageUrl || '/song-placeholder.png'} className="h-full w-full object-cover transition-transform group-hover:scale-110" alt="" />
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate text-[13px] font-bold text-white">{item.track?.name}</p>
-                  <p className="truncate text-[10px] text-slate-400">{item.track?.artist}</p>
-                  <p className="mt-2 truncate text-[9px] font-black uppercase tracking-tighter text-[#67e8f9]/80">{item.user?.displayName}</p>
-                </div>
-              </article>
-            ))}
           </div>
         </div>
 

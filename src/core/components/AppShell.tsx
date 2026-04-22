@@ -169,10 +169,10 @@ export default function AppShell({ children }: AppShellProps) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(103, 232, 249,0.32),transparent_34%),radial-gradient(circle_at_80%_25%,rgba(255, 141, 137,0.22),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(103, 232, 249,0.2),transparent_35%)]" />
 
       <div className="relative mx-auto flex h-screen w-full max-w-[1500px] overflow-hidden pb-20 md:pb-0">
-        <aside className="hidden w-72 min-w-[18rem] max-w-[18rem] shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl md:flex md:flex-col sticky top-0 h-screen overflow-hidden">
-          <div className="flex h-full flex-col justify-between py-6">
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4 border-b border-white/10 px-6 pb-6">
+        <aside className="hidden w-64 min-w-[16rem] max-w-[16rem] shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl md:flex md:flex-col sticky top-0 h-screen overflow-hidden">
+          <div className="flex h-full flex-col justify-between py-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 border-b border-white/10 px-5 pb-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-[#22d3ee] to-[#67e8f9] text-slate-100 shadow-[0_0_24px_rgba(103, 232, 249,0.4)]">
                 <UilHeadphones size={20} />
@@ -210,22 +210,21 @@ export default function AppShell({ children }: AppShellProps) {
             ))}
           </nav>
 
-          <div className="mx-4 mb-4 rounded-md border border-[#67e8f9]/25 bg-black/25 p-4">
-            <div className="mb-2 flex items-center gap-2 text-[#e5be85]">
-              <UilMusic size={16} />
-              <span className="text-xs uppercase tracking-[0.18em]">Escucha activa</span>
+          <div className="mx-3 mb-2 rounded-xl border border-[#67e8f9]/20 bg-black/30 p-3">
+            <div className="mb-1.5 flex items-center gap-2 text-[#e5be85]">
+              <UilMusic size={14} />
+              <span className="text-[10px] uppercase tracking-[0.15em]">En vivo</span>
             </div>
-            {nowPlaying?.imageUrl && (
-              <div className="mb-3 overflow-hidden rounded-xl border border-white/10">
-                <img src={nowPlaying.imageUrl} alt={nowPlaying.album} className="w-full object-cover aspect-square" />
+            <div className="flex items-center gap-3">
+              {nowPlaying?.imageUrl && (
+                <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-white/10">
+                  <img src={nowPlaying.imageUrl} alt={nowPlaying.album} className="h-full w-full object-cover" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[12px] font-bold text-white">{nowPlaying?.name || 'Silencio'}</p>
+                <p className="truncate text-[10px] text-slate-400">{nowPlaying?.artist || 'Spotify'}</p>
               </div>
-            )}
-            <p className="font-display text-sm text-white text-truncate max-w-[200px]">{nowPlaying?.name || 'No playback activo'}</p>
-            <p className="text-xs text-slate-300/70 text-truncate max-w-[200px]">{nowPlaying?.artist ? `${nowPlaying.artist} · ${nowPlaying.album}` : 'Esperando música'}</p>
-            <div className="mt-3 flex h-4 items-end gap-1">
-              {[0, 1, 2, 3, 4, 5].map(i => (
-                <span key={i} className={`eq-bar ${!nowPlaying ? 'animate-none h-1' : ''}`} style={{ animationDelay: `${i * 0.08}s` }} />
-              ))}
             </div>
           </div>
 

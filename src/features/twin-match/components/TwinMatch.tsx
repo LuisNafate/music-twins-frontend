@@ -118,7 +118,7 @@ export default function TwinMatch() {
           <p className="text-xs uppercase tracking-[0.18em] text-[#67e8f9]">Red Musical</p>
           <h1 className="mt-2 font-display text-3xl font-black text-white md:text-4xl">Tus Twins y Conexiones</h1>
           <p className="mt-2 max-w-3xl text-sm text-slate-200/75 md:text-base">
-            Gestiona tus amigos actuales y descubre quienes quieren conectar con tu frecuencia musical (Datos Reales).
+            Gestiona tus amigos actuales y descubre quienes quieren conectar con tu frecuencia musical.
           </p>
 
           <div className="mt-6 max-w-lg">
