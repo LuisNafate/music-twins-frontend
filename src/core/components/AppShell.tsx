@@ -11,8 +11,9 @@ import {
   UilUsersAlt,
   UilUser,
 } from '@iconscout/react-unicons'
-import { AuthService, PlayerService } from '../../services/api'
-import { useAuthStore } from '../../services/store'
+import { AuthService } from '@/features/auth/services/auth.service'
+import { PlayerService } from '@/features/feed/services/feed.service'
+import { useAuthStore } from '@/core/store/auth.store'
 
 export type AppView = 'feed' | 'twin-match' | 'messages' | 'profile'
 
