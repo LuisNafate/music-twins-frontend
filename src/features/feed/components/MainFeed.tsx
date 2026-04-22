@@ -11,10 +11,10 @@ import {
   UilPlay,
   UilUsersAlt,
 } from '@iconscout/react-unicons'
-import AppShell from './shared/AppShell'
-import { FeedService, InteractionService, PlayerService } from '../services/api'
-import { socketService } from '../services/socket'
-import { FeedItem } from '../types'
+import AppShell from '@/core/components/AppShell'
+import { FeedService, InteractionService, PlayerService } from '@/features/feed/services/feed.service'
+import { socketService } from '@/core/realtime/socket'
+import { FeedItem } from '@/features/feed/types/feed.types'
 
 function AvatarPill({ name }: { name: string }) {
   const initials = name
@@ -159,18 +159,23 @@ export default function MainFeed() {
 
   useEffect(() => {
     const socket = socketService.connect()
-    
-    socket.on('MESSAGE_RECEIVED', (data) => {
-      setActivities(prev => [`Nuevo mensaje de ${data.sender || 'un twin'}: ${data.text || ''}`, ...prev].slice(0, 5))
-    })
 
-    socket.on('activity', (data) => {
-      setActivities(prev => [data.message, ...prev].slice(0, 5))
-    })
+    // Authenticate WS
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
+    if (token) {
+      socket.emit('message', { type: 'AUTH', token })
+    }
+    
+    const handleWs = (data: any) => {
+      if (data.type === 'MESSAGE_RECEIVED' && data.payload) {
+        setActivities(prev => [`Nuevo mensaje: ${data.payload.content || ''}`, ...prev].slice(0, 5))
+      }
+    }
+
+    socket.on('message', handleWs)
 
     return () => {
-      socket.off('MESSAGE_RECEIVED')
-      socket.off('activity')
+      socket.off('message', handleWs)
     }
   }, [])
 
@@ -219,32 +224,6 @@ export default function MainFeed() {
                 </button>
               </div>
 
-              <div className="rounded-2xl border border-[#67e8f9]/20 bg-black/25 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-[#67e8f9]/85">Compartir snapshot</p>
-                  <span className="rounded-full bg-[#67e8f9]/20 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-[#a5f3fc]">
-                    Hoy
-                  </span>
-                </div>
-                <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
-                  <div className="rounded-xl bg-white/5 px-2 py-2">
-                    <p className="text-[#67e8f9]">84%</p>
-                    <p className="mt-1 text-slate-300/60">Match</p>
-                  </div>
-                  <div className="rounded-xl bg-white/5 px-2 py-2">
-                    <p className="text-[#67e8f9]">27</p>
-                    <p className="mt-1 text-slate-300/60">Amigos</p>
-                  </div>
-                  <div className="rounded-xl bg-white/5 px-2 py-2">
-                    <p className="text-[#67e8f9]">3</p>
-                    <p className="mt-1 text-slate-300/60">Twins</p>
-                  </div>
-                </div>
-                <button className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-slate-100 transition-colors hover:bg-white/10">
-                  <UilShareAlt size={14} />
-                  Compartir resumen
-                </button>
-              </div>
             </div>
           </header>
 
