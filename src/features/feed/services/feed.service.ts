@@ -35,6 +35,12 @@ export const PlayerService = {
   },
   getRecentTracks: (limit: number = 20): Promise<any> => {
     return fetchWithAuth(`/spotify/recent?limit=${limit}`);
+  },
+  syncPlayback: (track: any): Promise<any> => {
+    return fetchWithAuth('/playback/sync', {
+      method: 'POST',
+      body: JSON.stringify(track)
+    });
   }
 };
 

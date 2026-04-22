@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   UilEstate,
@@ -80,6 +80,7 @@ export default function AppShell({ children }: AppShellProps) {
   const activeView = pathnameToView(pathname)
   const { user, setUser } = useAuthStore()
   const [nowPlaying, setNowPlaying] = useState<any>(null)
+  const lastTrackId = useRef<string | null>(null)
 
   // Provide strict auth guarding
   useEffect(() => {
@@ -107,19 +108,47 @@ export default function AppShell({ children }: AppShellProps) {
   }, [user, setUser, router])
 
   useEffect(() => {
-    PlayerService.getNowPlaying()
-      .then(res => {
-         const data = res?.data || res;
-         if(!data) return setNowPlaying(null);
-         
-         setNowPlaying({
-           name: data.name || data.item?.name,
-           artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
-           album: data.album || data.item?.album?.name,
-           imageUrl: data.imageUrl || data.item?.album?.images?.[0]?.url
-         });
-      })
-      .catch((e) => console.warn("No playback available", e))
+    const fetchNowPlaying = () => {
+      PlayerService.getNowPlaying()
+        .then(res => {
+          const data = res?.data || res;
+          if(!data) {
+            setNowPlaying(null);
+            lastTrackId.current = null;
+            return;
+          }
+          
+          const trackName = data.name || data.item?.name;
+          const trackId = data.id || data.item?.id;
+          const artist = data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined);
+          const album = data.album || data.item?.album?.name;
+          const imageUrl = data.imageUrl || data.item?.album?.images?.[0]?.url;
+
+          setNowPlaying({
+            name: trackName,
+            artist,
+            album,
+            imageUrl
+          });
+
+          // Sync with backend if it's a new track
+          if (trackId && trackId !== lastTrackId.current) {
+            lastTrackId.current = trackId;
+            PlayerService.syncPlayback({
+              trackId,
+              name: trackName,
+              artist,
+              albumName: album,
+              albumImageUrl: imageUrl
+            }).catch(e => console.error("Sync failed", e));
+          }
+        })
+        .catch((e) => console.warn("No playback available", e))
+    };
+
+    fetchNowPlaying();
+    const interval = setInterval(fetchNowPlaying, 30000);
+    return () => clearInterval(interval);
   }, [pathname])
 
   function navigateTo(view: AppView) {
