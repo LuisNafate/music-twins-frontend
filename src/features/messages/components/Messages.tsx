@@ -100,14 +100,14 @@ export default function Messages() {
         
         // Map backend format: { id, user: { id, displayName, avatarUrl }, lastMessage, unreadCount }
         const mapped = list.map((c: any, index: number) => ({
-          id: c.conversationId || index.toString(),
-          otherUserId: c.userId || '',
-          name: c.userDisplayName || `Usuario ${index}`,
-          avatarUrl: c.userAvatarUrl || null,
-          online: false, // Desconectado por defecto hasta implementar presencia real
-          lastMsg: '...', 
-          time: c.updatedAt ? new Date(c.updatedAt).toLocaleDateString() : 'reciente',
-          unread: 0,
+          id: c.id || index.toString(),
+          otherUserId: c.user?.id || '',
+          name: c.user?.displayName || `Usuario ${index}`,
+          avatarUrl: c.user?.avatarUrl || null,
+          online: false, 
+          lastMsg: c.lastMessage || 'No hay mensajes aún', 
+          time: 'reciente',
+          unread: c.unreadCount || 0,
         }))
         setConversations(mapped)
         if (mapped.length > 0 && !activeConvId) {

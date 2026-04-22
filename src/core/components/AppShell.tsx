@@ -168,7 +168,7 @@ export default function AppShell({ children }: AppShellProps) {
     <div className="relative min-h-screen w-full overflow-hidden bg-[#0e0e11] text-[#fff8ef] text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(103, 232, 249,0.32),transparent_34%),radial-gradient(circle_at_80%_25%,rgba(255, 141, 137,0.22),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(103, 232, 249,0.2),transparent_35%)]" />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1500px] pb-20 md:pb-0">
+      <div className="relative mx-auto flex h-screen w-full max-w-[1500px] overflow-hidden pb-20 md:pb-0">
         <aside className="hidden w-72 min-w-[18rem] max-w-[18rem] shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl md:flex md:flex-col sticky top-0 h-screen overflow-y-auto no-scrollbar">
           <div className="flex flex-col gap-4 border-b border-white/10 px-6 py-6">
             <div className="flex items-center gap-3">
@@ -241,7 +241,7 @@ export default function AppShell({ children }: AppShellProps) {
           </div>
         </aside>
 
-        <main className="relative flex-1 overflow-y-auto">
+        <main className="relative flex-1 h-screen overflow-y-auto custom-scrollbar">
           <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-56 bg-[linear-gradient(180deg,rgba(255, 141, 137,0.15),transparent)]" />
           <p className="pointer-events-none absolute left-10 top-4 z-0 hidden select-none font-display text-8xl font-semibold tracking-[0.08em] text-[#67e8f9]/[0.08] md:block">
             {viewHeadline[activeView]}
