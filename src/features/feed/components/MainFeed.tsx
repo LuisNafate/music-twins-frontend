@@ -259,8 +259,9 @@ export default function MainFeed() {
                   </div>
                   <div className="text-center min-w-0 w-full">
                     <p className="truncate text-sm font-bold text-white">{friend.displayName}</p>
-                    <p className="mt-1 truncate text-[11px] text-[#67e8f9] font-medium">
-                      {friend.trackName || 'Explorando...'}
+                    <p className="truncate text-[10px] uppercase tracking-widest text-[#67e8f9]/60">Activo ahora</p>
+                    <p className="mt-1 truncate text-[11px] font-medium text-white">
+                      {friend.trackName || 'Escuchando música...'}
                     </p>
                   </div>
                 </div>
@@ -277,11 +278,11 @@ export default function MainFeed() {
             <div className="flex gap-5 overflow-x-auto pb-4 no-scrollbar">
               {topTracks.length === 0 ? (
                 Array.from({length: 3}).map((_, i) => (
-                  <div key={i} className="h-40 min-w-[160px] animate-pulse rounded-3xl bg-white/5" />
+                  <div key={i} className="h-40 min-w-[120px] animate-pulse rounded-3xl bg-white/5" />
                 ))
               ) : topTracks.map((track, i) => (
-                <div key={i} className="group relative min-w-[160px] shrink-0">
-                  <div className="aspect-square overflow-hidden rounded-3xl border border-white/10 shadow-lg transition-transform group-hover:scale-105">
+                <div key={i} className="group relative min-w-[120px] shrink-0">
+                  <div className="aspect-square overflow-hidden rounded-2xl border border-white/10 shadow-lg transition-transform group-hover:scale-105">
                     {track.imageUrl || track.albumImageUrl ? (
                        <img src={track.imageUrl || track.albumImageUrl} className="h-full w-full object-cover" alt="" />
                     ) : (
@@ -339,15 +340,24 @@ export default function MainFeed() {
                 <p className="text-sm text-slate-400 mt-1">Historial de música de tu red social.</p>
               </div>
 
-          <div className="space-y-4">
+          <div className="max-h-[500px] overflow-y-auto pr-2 custom-scrollbar space-y-4">
             {loading && (
                <div className="p-8 text-center text-slate-400">Loading feed...</div>
             )}
             {!loading && feedData.length === 0 && (
                <div className="p-8 text-center text-slate-400">No hay actividad reciente en tu red.</div>
             )}
-            {feedData.map((card, index) => (
-              <SongCardItem key={card.playbackEventId || index} card={card} delay={index * 0.07} />
+            {!loading && feedData.map((item, i) => (
+              <article key={i} className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/2 p-3 transition-colors hover:bg-white/5">
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl">
+                  <img src={item.track?.albumImageUrl || '/song-placeholder.png'} className="h-full w-full object-cover" alt="" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-bold text-white">{item.track?.name}</p>
+                  <p className="truncate text-xs text-slate-400">{item.track?.artist}</p>
+                  <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#67e8f9]/70">Escuchado por {item.user?.displayName || 'Alguien'}</p>
+                </div>
+              </article>
             ))}
           </div>
         </div>
