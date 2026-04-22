@@ -305,30 +305,43 @@ export default function MainFeed() {
             <div className="mb-6">
               <h2 className="font-display text-2xl font-bold text-white">Lo más escuchado en tu red</h2>
               <p className="text-sm text-slate-400 mt-1">Canciones populares entre tus amigos recientemente.</p>
-            </div>
-            <div className="flex gap-5 overflow-x-auto pb-4 no-scrollbar">
+              <div className="space-y-6 rounded-3xl border border-white/5 bg-white/2 p-6 backdrop-blur-md">
               {trendingTracks.length === 0 ? (
-                <div className="flex-1 rounded-3xl border border-white/5 bg-white/5 p-8 text-center text-slate-500 italic">
-                  No hay suficientes datos para mostrar tendencias aún.
+                <div className="rounded-2xl border border-white/5 bg-white/5 p-12 text-center text-slate-500 italic">
+                  No hay suficientes datos de tus amigos para mostrar tendencias aún.
                 </div>
-              ) : trendingTracks.map((track, i) => (
-                <div key={i} className="group relative min-w-[160px] shrink-0">
-                  <div className="aspect-square overflow-hidden rounded-3xl border border-white/10 shadow-lg transition-transform group-hover:scale-105">
-                    {track.albumImageUrl ? (
-                       <img src={track.albumImageUrl} className="h-full w-full object-cover" alt="" />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-white/5 text-slate-600">
-                        <UilMusic size={32} />
+              ) : (
+                trendingTracks.map((track, i) => {
+                  const maxCount = Math.max(...trendingTracks.map(t => parseInt(t.playCount || '1'))) || 1;
+                  const percentage = (parseInt(track.playCount || '0') / maxCount) * 100;
+                  return (
+                    <div key={i} className="group relative">
+                      <div className="mb-2 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4 min-w-0 flex-1">
+                           <span className="text-xs font-black text-white/20 w-4 italic">{i + 1}</span>
+                           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-white/10 shadow-lg">
+                             <img src={track.albumImageUrl || '/song-placeholder.png'} className="h-full w-full object-cover" alt="" />
+                           </div>
+                           <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-bold text-white group-hover:text-[#67e8f9] transition-colors">{track.name}</p>
+                              <p className="truncate text-[10px] uppercase tracking-wider text-slate-500">{track.artist}</p>
+                           </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xs font-mono font-bold text-[#67e8f9] bg-[#67e8f9]/10 px-2 py-0.5 rounded-full">{track.playCount} <span className="text-[10px] opacity-70">REPROS</span></span>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                  <div className="mt-3 min-w-0">
-                    <p className="truncate text-sm font-bold text-white">{track.name}</p>
-                    <p className="truncate text-xs text-slate-400">{track.artist}</p>
-                    <p className="mt-1 text-[10px] text-[#67e8f9] font-bold uppercase tracking-wider">{track.playCount} repros</p>
-                  </div>
-                </div>
-              ))}
+                      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                         <div 
+                           className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-[#22d3ee] to-[#67e8f9] shadow-[0_0_12px_rgba(103,232,249,0.3)] transition-all duration-1000 ease-out"
+                           style={{ width: `${percentage}%` }}
+                         />
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
             </div>
           </div>
 
