@@ -282,7 +282,13 @@ export default function MainFeed() {
               ) : topTracks.map((track, i) => (
                 <div key={i} className="group relative min-w-[160px] shrink-0">
                   <div className="aspect-square overflow-hidden rounded-3xl border border-white/10 shadow-lg transition-transform group-hover:scale-105">
-                    <img src={track.albumImageUrl} className="h-full w-full object-cover" alt="" />
+                    {track.imageUrl || track.albumImageUrl ? (
+                       <img src={track.imageUrl || track.albumImageUrl} className="h-full w-full object-cover" alt="" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-white/5 text-slate-600">
+                        <UilMusic size={32} />
+                      </div>
+                    )}
                   </div>
                   <div className="mt-3 min-w-0">
                     <p className="truncate text-sm font-bold text-white">{track.name}</p>

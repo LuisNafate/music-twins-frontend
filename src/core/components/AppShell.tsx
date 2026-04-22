@@ -169,7 +169,7 @@ export default function AppShell({ children }: AppShellProps) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(103, 232, 249,0.32),transparent_34%),radial-gradient(circle_at_80%_25%,rgba(255, 141, 137,0.22),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(103, 232, 249,0.2),transparent_35%)]" />
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-[1500px] pb-20 md:pb-0">
-        <aside className="hidden w-72 shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl md:flex md:flex-col">
+        <aside className="hidden w-72 shrink-0 border-r border-white/10 bg-white/5 backdrop-blur-xl md:flex md:flex-col sticky top-0 h-screen overflow-y-auto no-scrollbar">
           <div className="flex flex-col gap-4 border-b border-white/10 px-6 py-6">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-gradient-to-br from-[#22d3ee] to-[#67e8f9] text-slate-100 shadow-[0_0_24px_rgba(103, 232, 249,0.4)]">
