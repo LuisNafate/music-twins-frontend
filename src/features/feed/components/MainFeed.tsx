@@ -16,7 +16,11 @@ import { FeedService, InteractionService, PlayerService } from '@/features/feed/
 import { socketService } from '@/core/realtime/socket'
 import { FeedItem } from '@/features/feed/types/feed.types'
 
-function AvatarPill({ name }: { name: string }) {
+function AvatarPill({ name, url }: { name: string; url?: string | null }) {
+  if (url) {
+    return <img src={url} alt={name} className="h-10 w-10 rounded-2xl object-cover" />
+  }
+
   const initials = name
     .split(' ')
     .map(part => part[0])
@@ -29,6 +33,16 @@ function AvatarPill({ name }: { name: string }) {
       {initials}
     </span>
   )
+}
+
+function getTimeAgo(date: string) {
+  const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+  if (seconds < 60) return 'ahora';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `hace ${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `hace ${hours}h`;
+  return `hace ${Math.floor(hours / 24)}d`;
 }
 
 function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
@@ -53,19 +67,17 @@ function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
 
     try {
       if (!alreadyLiked) {
-        await InteractionService.reactToEvent(card.id, emoji)
+        await InteractionService.reactToEvent(card.playbackEventId as any, emoji)
       }
     } catch (error) {
       console.error('Failed to react', error)
-      // Revert optimistic if needed...
     }
   }
 
-  // Fallbacks if mapping is not exact
-  const title = card.title || 'Unknown Title'
-  const timeAgo = card.timeAgo || 'recent'
-  const artistAlbum = card.artistAlbum || 'Unknown Artist'
-  const mood = card.mood || 'Vibe'
+  const title = card.track?.name || 'Unknown Title'
+  const timeAgo = getTimeAgo(card.playedAt)
+  const artist = card.track?.artist || 'Unknown Artist'
+  const album = card.track?.albumName || 'Unknown Album'
 
   return (
     <article
@@ -73,16 +85,21 @@ function SongCardItem({ card, delay = 0 }: { card: FeedItem; delay?: number }) {
       style={{ animationDelay: `${delay}s` }}
     >
       <div className="flex items-start gap-3">
-        <AvatarPill name={card.friend || 'A'} />
+        <AvatarPill name={card.user.displayName} url={card.user.avatarUrl} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="font-display text-xl font-bold text-white">{title}</h3>
             <span className="text-xs uppercase tracking-[0.14em] text-slate-300/60">{timeAgo}</span>
           </div>
-          <p className="text-sm text-slate-300/80">{artistAlbum}</p>
+          <p className="text-sm text-slate-300/80">{artist} · {album}</p>
+          {card.track.albumImageUrl && (
+            <div className="mt-3 overflow-hidden rounded-2xl border border-white/10">
+               <img src={card.track.albumImageUrl} alt={album} className="w-full object-cover max-h-48" />
+            </div>
+          )}
           <div className="mt-2 inline-flex items-center gap-1 rounded-full border border-[#67e8f9]/30 bg-[#67e8f9]/18 px-2 py-1 text-xs text-[#e5be85]">
             <UilHeartRate size={13} />
-            {mood}
+            Listening now
           </div>
         </div>
       </div>
@@ -126,6 +143,7 @@ export default function MainFeed() {
   const [loading, setLoading] = useState(true)
   const [feedData, setFeedData] = useState<FeedItem[]>([])
   const [nowPlaying, setNowPlaying] = useState<any>(null)
+  const [friendSummary, setFriendSummary] = useState<any[]>([])
   const [activities, setActivities] = useState<string[]>([])
   const router = useRouter()
 
@@ -140,13 +158,21 @@ export default function MainFeed() {
           const data = np?.data || np;
           if (data) {
              setNowPlaying({
-               title: data.title || data.item?.name,
+               name: data.name || data.item?.name,
                artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
-               album: data.album || data.item?.album?.name
+               album: data.album || data.item?.album?.name,
+               imageUrl: data.imageUrl || data.item?.album?.images?.[0]?.url
              });
           }
         } catch(e) {
           console.warn("Could not fetch now playing", e)
+        }
+
+        try {
+          const summary = await FeedService.getSummary();
+          setFriendSummary(summary);
+        } catch(e) {
+          console.warn("Could not fetch friend summary", e)
         }
       } catch (err) {
         console.error("Error loading feed", err)
@@ -155,6 +181,14 @@ export default function MainFeed() {
       }
     }
     loadData()
+
+    const interval = setInterval(() => {
+      FeedService.getSummary()
+        .then(summary => setFriendSummary(summary))
+        .catch(e => console.warn("Could not refresh friend summary", e))
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [])
 
   useEffect(() => {
@@ -235,7 +269,7 @@ export default function MainFeed() {
                <div className="p-8 text-center text-slate-400">No hay actividad reciente en tu red.</div>
             )}
             {feedData.map((card, index) => (
-              <SongCardItem key={card.id || index} card={card} delay={index * 0.07} />
+              <SongCardItem key={card.playbackEventId || index} card={card} delay={index * 0.07} />
             ))}
           </div>
         </section>
@@ -248,7 +282,12 @@ export default function MainFeed() {
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-[#25252a]/70 p-4">
-              <p className="font-display text-xl font-bold text-white max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.title || 'No playback activo'}</p>
+              {nowPlaying?.imageUrl && (
+                <div className="mb-4 overflow-hidden rounded-xl border border-white/10 shadow-xl">
+                  <img src={nowPlaying.imageUrl} alt={nowPlaying.album} className="w-full object-cover aspect-square" />
+                </div>
+              )}
+              <p className="font-display text-xl font-bold text-white max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.name || 'No playback activo'}</p>
               <p className="text-sm text-[#67e8f9] max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.artist || 'Esperando música'}</p>
               <p className="text-xs text-slate-300/65 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">{nowPlaying?.album || "Spotify Session"}</p>
 
@@ -285,6 +324,39 @@ export default function MainFeed() {
             </div>
           </section>
 
+          <section className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-5 shadow-lg">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="inline-flex items-center gap-2 text-[#67e8f9]">
+                <UilUsersAlt size={18} />
+                <p className="text-xs font-bold uppercase tracking-[0.2em]">En directo (Amigos)</p>
+              </div>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#67e8f9] animate-ping" />
+            </div>
+            <div className="space-y-4">
+              {friendSummary.map((friend, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  {friend.avatarUrl ? (
+                    <img src={friend.avatarUrl} className="h-8 w-8 rounded-full object-cover" alt="" />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-white/10" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-medium text-white">{friend.displayName}</p>
+                    <p className="truncate text-[10px] text-slate-400">
+                      {friend.trackName ? `Escuchando: ${friend.trackName}` : 'Sin actividad reciente'}
+                    </p>
+                  </div>
+                  {friend.trackName && (
+                    <span className="flex h-2 w-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                  )}
+                </div>
+              ))}
+              {friendSummary.length === 0 && (
+                <p className="text-xs text-slate-500 italic">No hay amigos conectados.</p>
+              )}
+            </div>
+          </section>
+
           <section className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-5">
             <div className="mb-3 inline-flex items-center gap-2 text-[#f0b7a9]">
               <UilMusic size={16} />
@@ -296,6 +368,19 @@ export default function MainFeed() {
               ) : activities.map((act, i) => (
                  <p key={i} className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">{act}</p>
               ))}
+            </div>
+          </section>
+          <section className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-5">
+            <div className="mb-3 inline-flex items-center gap-2 text-[#ff8d89]">
+              <UilFavorite size={16} />
+              <p className="text-xs uppercase tracking-[0.16em]">Tendencias en tu red</p>
+            </div>
+            <div className="space-y-3">
+               <p className="text-[11px] text-slate-400">Basado en lo que tus amigos han escuchado mas hoy.</p>
+               <div className="rounded-2xl border border-white/5 bg-white/5 p-3">
+                  <p className="text-xs font-bold text-white">Próximamente</p>
+                  <p className="text-[10px] text-slate-300">Estamos analizando los datos de tu red...</p>
+               </div>
             </div>
           </section>
         </aside>

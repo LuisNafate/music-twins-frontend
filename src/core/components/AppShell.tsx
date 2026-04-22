@@ -113,9 +113,10 @@ export default function AppShell({ children }: AppShellProps) {
          if(!data) return setNowPlaying(null);
          
          setNowPlaying({
-           title: data.title || data.item?.name,
+           name: data.name || data.item?.name,
            artist: data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined),
-           album: data.album || data.item?.album?.name
+           album: data.album || data.item?.album?.name,
+           imageUrl: data.imageUrl || data.item?.album?.images?.[0]?.url
          });
       })
       .catch((e) => console.warn("No playback available", e))
@@ -177,7 +178,12 @@ export default function AppShell({ children }: AppShellProps) {
               <UilMusic size={16} />
               <span className="text-xs uppercase tracking-[0.18em]">Escucha activa</span>
             </div>
-            <p className="font-display text-sm text-white text-truncate max-w-[200px]">{nowPlaying?.title || 'No playback activo'}</p>
+            {nowPlaying?.imageUrl && (
+              <div className="mb-3 overflow-hidden rounded-xl border border-white/10">
+                <img src={nowPlaying.imageUrl} alt={nowPlaying.album} className="w-full object-cover aspect-square" />
+              </div>
+            )}
+            <p className="font-display text-sm text-white text-truncate max-w-[200px]">{nowPlaying?.name || 'No playback activo'}</p>
             <p className="text-xs text-slate-300/70 text-truncate max-w-[200px]">{nowPlaying?.artist ? `${nowPlaying.artist} · ${nowPlaying.album}` : 'Esperando música'}</p>
             <div className="mt-3 flex h-4 items-end gap-1">
               {[0, 1, 2, 3, 4, 5].map(i => (

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { UilBell, UilMusic } from '@iconscout/react-unicons'
+import { UilBell, UilMusic, UilFavorite } from '@iconscout/react-unicons'
 import AppShell from '@/core/components/AppShell'
 import { useAuthStore } from '@/core/store/auth.store'
 import { SpotifyProfileService } from '@/features/profile/services/profile.service'
@@ -50,12 +50,20 @@ export default function Profile() {
   const [publicProfile, setPublicProfile] = useState(true)
   const { user } = useAuthStore()
   const [realRecent, setRealRecent] = useState<any[]>([])
+  const [topTracks, setTopTracks] = useState<any[]>([])
 
   useEffect(() => {
     SpotifyProfileService.getRecentTracks(15)
       .then(res => {
          const data = res?.items || res?.data || res || [];
          if (Array.isArray(data)) setRealRecent(data);
+      })
+      .catch(e => console.warn(e));
+
+    SpotifyProfileService.getTopTracks(10)
+      .then(res => {
+        const data = Array.isArray(res) ? res : (res?.data || []);
+        setTopTracks(data);
       })
       .catch(e => console.warn(e));
   }, [])
@@ -112,6 +120,29 @@ export default function Profile() {
                   </div>
                 )})}
                 {realRecent.length === 0 && <p className="text-sm text-slate-400">Aún no hay reproducciones recientes.</p>}
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-5">
+              <div className="mb-4 inline-flex items-center gap-2 text-[#67e8f9]">
+                <UilFavorite size={16} />
+                <p className="text-xs uppercase tracking-[0.16em]">Tus favoritas (Top Spotify)</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {topTracks.map((track, idx) => (
+                  <div key={idx} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                    <img 
+                      src={track.imageUrl || '/song-placeholder.png'} 
+                      alt={track.name} 
+                      className="h-10 w-10 rounded-lg object-cover" 
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-white">{track.name}</p>
+                      <p className="truncate text-xs text-slate-300/65">{track.artist}</p>
+                    </div>
+                  </div>
+                ))}
+                {topTracks.length === 0 && <p className="text-sm text-slate-400">Sin datos de favoritos aún.</p>}
               </div>
             </article>
           </div>

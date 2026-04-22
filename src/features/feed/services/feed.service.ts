@@ -5,6 +5,9 @@ import { FeedItem, Reaction, Note } from '@/features/feed/types/feed.types';
 export const FeedService = {
   getFeed: (limit: number = 20): Promise<{ items?: FeedItem[] } | FeedItem[]> => {
     return fetchWithAuth(`/feed?limit=${limit}`);
+  },
+  getSummary: (): Promise<any[]> => {
+    return fetchWithAuth('/feed/summary');
   }
 };
 

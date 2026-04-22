@@ -28,5 +28,13 @@ export const SpotifyProfileService = {
    */
   getNowPlaying: (): Promise<any> => {
     return fetchWithAuth('/spotify/now-playing');
+  },
+
+  /**
+   * Obtiene las pistas top del usuario.
+   * GET /spotify/top-tracks?limit=N
+   */
+  getTopTracks: (limit: number = 20): Promise<any> => {
+    return fetchWithAuth(`/spotify/top-tracks?limit=${limit}`);
   }
 };

@@ -5,13 +5,22 @@ export interface Reaction {
 }
 
 export interface FeedItem {
-  id: number;
-  friend: string;
-  title: string;
-  artistAlbum: string;
-  mood: string;
-  timeAgo: string;
+  playbackEventId: string;
+  user: {
+    id: string;
+    displayName: string;
+    avatarUrl: string | null;
+  };
+  track: {
+    trackId: string;
+    name: string;
+    artist: string;
+    albumName: string | null;
+    albumImageUrl: string | null;
+  };
+  playedAt: string;
   reactions: Reaction[];
+  notesCount: number;
 }
 
 export interface Note {
