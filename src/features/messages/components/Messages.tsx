@@ -10,10 +10,10 @@ import {
   UilSearch,
   UilUserCircle,
 } from '@iconscout/react-unicons'
-import AppShell from './shared/AppShell'
-import { MessageService } from '../services/api'
-import { socketService } from '../services/socket'
-import { useAuthStore } from '../services/store'
+import AppShell from '@/core/components/AppShell'
+import { ConversationService, MessageService } from '@/features/messages/services/messages.service'
+import { socketService } from '@/core/realtime/socket'
+import { useAuthStore } from '@/core/store/auth.store'
 
 type MsgType = 'text' | 'song'
 
@@ -28,12 +28,13 @@ interface Message {
 
 interface Conversation {
   id: number | string
+  otherUserId: string
   name: string
+  avatarUrl?: string | null
   online: boolean
   lastMsg: string
   time: string
   unread: number
-  messages?: Message[]
 }
 
 function InitialBadge({ name, online, size = 'h-10 w-10' }: { name: string; online: boolean; size?: string }) {
@@ -85,16 +86,19 @@ export default function Messages() {
   useEffect(() => {
     async function fetchList() {
       try {
-        const res = await MessageService.getConversations()
+        const raw = await ConversationService.getConversations()
+        const list = Array.isArray(raw) ? raw : (raw as any).items || []
         
-        // Defensive mapping to ensure our UI struct is populated
-        const mapped = res.map((c: any, index) => ({
+        // Map backend format: { id, user: { id, displayName, avatarUrl }, lastMessage, unreadCount }
+        const mapped = list.map((c: any, index: number) => ({
           id: c.id || c._id || index.toString(),
-          name: c.friendName || c.name || `Usuario ${index}`,
-          online: c.online !== undefined ? c.online : true,
-          lastMsg: c.lastMessage || c.lastMsg || '...',
-          time: c.time || 'reciente',
-          unread: c.unreadCount || c.unread || 0,
+          otherUserId: c.user?.id || '',
+          name: c.user?.displayName || c.friendName || c.name || `Usuario ${index}`,
+          avatarUrl: c.user?.avatarUrl || null,
+          online: true,
+          lastMsg: c.lastMessage || '...',
+          time: 'reciente',
+          unread: c.unreadCount || 0,
         }))
         setConversations(mapped)
         if (mapped.length > 0 && !activeConvId) {
@@ -114,17 +118,18 @@ export default function Messages() {
     async function loadThread() {
       try {
         const res = await MessageService.getMessages(String(activeConvId))
-        const mapped = res.map((m: any) => ({
+        const items = Array.isArray(res) ? res : (res as any).items || []
+        const mapped = items.map((m: any) => ({
           id: m.id || m._id || Date.now() + Math.random(),
-          from: (m.senderId === user?.id || m.isMine) ? 'me' : 'them',
+          from: (String(m.senderId) === String(user?.id) || m.isMine) ? 'me' : 'them',
           type: m.song ? 'song' : 'text',
-          text: m.text || m.content || '',
+          text: m.content || m.text || '',
           song: m.song,
-          time: m.time || m.timestamp || new Date().toLocaleTimeString('es', {hour: '2-digit', minute:'2-digit'}),
+          time: m.createdAt ? new Date(m.createdAt).toLocaleTimeString('es', {hour: '2-digit', minute:'2-digit'}) : 'reciente',
         })) as Message[]
         
         setActiveMessages(mapped)
-        MessageService.markAsRead(mapped.filter(m => m.from === 'them').map(m => String(m.id))).catch(() => {})
+        MessageService.markAsRead(String(activeConvId)).catch(() => {})
         
         // Remove unread bubble
         setConversations(prev => prev.map(c => c.id === activeConvId ? { ...c, unread: 0 } : c))
@@ -136,37 +141,40 @@ export default function Messages() {
     loadThread()
   }, [activeConvId, user?.id])
 
-  // 3. Setup WebSockets
+  // 3. Setup WebSockets — Backend uses single 'message' event with { type, payload }
   useEffect(() => {
     const socket = socketService.connect()
-    
-    const handleReceive = (data: any) => {
-      // Validate correct format based on fallback
-      const convId = data.conversationId || data.threadId || null
-      const incomingMsg: Message = {
-        id: data.id || Date.now(),
-        from: (data.senderId === user?.id) ? 'me' : 'them',
-        type: data.song ? 'song' : 'text',
-        text: data.text || data.content || '',
-        time: new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
-      }
 
-      // If it belongs to active chat, push it and read it
-      if (String(convId) === String(activeConvId) || !convId) {
-         setActiveMessages(prev => [...prev, incomingMsg])
-         if (incomingMsg.from === 'them') {
-            MessageService.markAsRead([String(incomingMsg.id)]).catch(()=>{});
-         }
-      } else {
-         // Add unread badge to others
-         setConversations(prev => prev.map(c => c.id === convId ? { ...c, unread: c.unread + 1, lastMsg: incomingMsg.text || 'Nuevo msg' } : c))
+    // Authenticate via WS after connecting
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
+    if (token) {
+      socket.emit('message', { type: 'AUTH', token })
+    }
+    
+    const handleWsMessage = (data: any) => {
+      if (data.type === 'MESSAGE_RECEIVED' && data.payload) {
+        const p = data.payload
+        const convId = p.conversationId || null
+        const incomingMsg: Message = {
+          id: p.id || Date.now(),
+          from: (String(p.senderId) === String(user?.id)) ? 'me' : 'them',
+          type: 'text',
+          text: p.content || '',
+          time: p.createdAt ? new Date(p.createdAt).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }) : 'ahora'
+        }
+
+        if (String(convId) === String(activeConvId)) {
+          setActiveMessages(prev => [...prev, incomingMsg])
+        } else if (convId) {
+          setConversations(prev => prev.map(c => c.id === convId ? { ...c, unread: c.unread + 1, lastMsg: incomingMsg.text || 'Nuevo msg' } : c))
+        }
       }
     }
 
-    socket.on('MESSAGE_RECEIVED', handleReceive)
+    socket.on('message', handleWsMessage)
 
     return () => {
-      socket.off('MESSAGE_RECEIVED', handleReceive)
+      socket.off('message', handleWsMessage)
     }
   }, [activeConvId, user?.id])
 
@@ -199,13 +207,17 @@ export default function Messages() {
     // Optimistic UI update
     setActiveMessages(prev => [...prev, newMessage])
     
-    // Send via socket
+    // Send via socket — backend expects { type: 'MESSAGE_SEND', payload: { ... } }
     const socket = socketService.getSocket()
     if (socket) {
-      socket.emit('MESSAGE_SEND', {
-        conversationId: activeConvId,
-        text: input.trim(),
-        senderId: user?.id
+      const conv = conversations.find(c => c.id === activeConvId)
+      socket.emit('message', {
+        type: 'MESSAGE_SEND',
+        payload: {
+          conversationId: activeConvId,
+          content: input.trim(),
+          toUserId: conv?.otherUserId || '',
+        }
       })
     }
 
