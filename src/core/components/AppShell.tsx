@@ -119,7 +119,8 @@ export default function AppShell({ children }: AppShellProps) {
           }
           
           const trackName = data.name || data.item?.name;
-          const trackId = data.id || data.item?.id || data.uri; // Intentar múltiples campos de ID
+          // El backend usa 'trackId' según la interfaz de NestJS
+          const trackId = data.trackId || data.id || data.item?.id || data.uri; 
           const artist = data.artist || (data.item?.artists ? data.item.artists[0]?.name : undefined);
           const album = data.album || data.item?.album?.name;
           const imageUrl = data.imageUrl || data.item?.album?.images?.[0]?.url;
