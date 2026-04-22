@@ -37,7 +37,16 @@ interface Conversation {
   unread: number
 }
 
-function InitialBadge({ name, online, size = 'h-10 w-10' }: { name: string; online: boolean; size?: string }) {
+function InitialBadge({ name, avatarUrl, online, size = 'h-10 w-10' }: { name: string; avatarUrl?: string | null; online: boolean; size?: string }) {
+  if (avatarUrl) {
+    return (
+      <div className="relative shrink-0">
+        <img src={avatarUrl} alt={name} className={`${size} rounded-2xl object-cover`} />
+        {online && <span className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-slate-950 bg-[#67e8f9]" />}
+      </div>
+    )
+  }
+
   const initials = name
     .split(' ')
     .map(part => part[0])
@@ -91,14 +100,14 @@ export default function Messages() {
         
         // Map backend format: { id, user: { id, displayName, avatarUrl }, lastMessage, unreadCount }
         const mapped = list.map((c: any, index: number) => ({
-          id: c.id || c._id || index.toString(),
-          otherUserId: c.user?.id || '',
-          name: c.user?.displayName || c.friendName || c.name || `Usuario ${index}`,
-          avatarUrl: c.user?.avatarUrl || null,
-          online: true,
-          lastMsg: c.lastMessage || '...',
-          time: 'reciente',
-          unread: c.unreadCount || 0,
+          id: c.conversationId || index.toString(),
+          otherUserId: c.userId || '',
+          name: c.userDisplayName || `Usuario ${index}`,
+          avatarUrl: c.userAvatarUrl || null,
+          online: false, // Desconectado por defecto hasta implementar presencia real
+          lastMsg: '...', 
+          time: c.updatedAt ? new Date(c.updatedAt).toLocaleDateString() : 'reciente',
+          unread: 0,
         }))
         setConversations(mapped)
         if (mapped.length > 0 && !activeConvId) {
@@ -128,7 +137,8 @@ export default function Messages() {
           time: m.createdAt ? new Date(m.createdAt).toLocaleTimeString('es', {hour: '2-digit', minute:'2-digit'}) : 'reciente',
         })) as Message[]
         
-        setActiveMessages(mapped)
+        // Revertimos para que los más antiguos queden arriba y los nuevos abajo (scroll bottom)
+        setActiveMessages(mapped.reverse())
         MessageService.markAsRead(String(activeConvId)).catch(() => {})
         
         // Remove unread bubble
@@ -252,7 +262,7 @@ export default function Messages() {
                   conversation.id === activeConvId ? 'bg-white/10' : 'hover:bg-white/6'
                 }`}
               >
-                <InitialBadge name={conversation.name} online={conversation.online} />
+                <InitialBadge name={conversation.name} avatarUrl={conversation.avatarUrl} online={conversation.online} />
                 <div className="min-w-0 flex-1">
                   <div className="mb-1 flex items-center justify-between gap-2">
                     <p className="truncate text-sm font-semibold text-white">{conversation.name}</p>
@@ -274,7 +284,7 @@ export default function Messages() {
           {activeConversation ? (
             <>
               <header className="flex items-center gap-3 border-b border-white/10 p-4">
-                <InitialBadge name={activeConversation.name} online={activeConversation.online} size="h-9 w-9" />
+                <InitialBadge name={activeConversation.name} avatarUrl={activeConversation.avatarUrl} online={activeConversation.online} size="h-9 w-9" />
                 <div>
                   <p className="font-display text-lg font-bold text-white">{activeConversation.name}</p>
                   <p className="text-xs text-slate-300/65">{activeConversation.online ? 'En linea' : 'Desconectado'}</p>

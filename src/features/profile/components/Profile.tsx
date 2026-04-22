@@ -45,27 +45,10 @@ function ToggleRow({
 }
 
 export default function Profile() {
-  const [notifEnabled, setNotifEnabled] = useState(true)
-  const [shareEnabled, setShareEnabled] = useState(true)
-  const [publicProfile, setPublicProfile] = useState(true)
   const { user } = useAuthStore()
-  const [realRecent, setRealRecent] = useState<any[]>([])
-  const [topTracks, setTopTracks] = useState<any[]>([])
 
   useEffect(() => {
-    SpotifyProfileService.getRecentTracks(15)
-      .then(res => {
-         const data = res?.items || res?.data || res || [];
-         if (Array.isArray(data)) setRealRecent(data);
-      })
-      .catch(e => console.warn(e));
-
-    SpotifyProfileService.getTopTracks(10)
-      .then(res => {
-        const data = Array.isArray(res) ? res : (res?.data || []);
-        setTopTracks(data);
-      })
-      .catch(e => console.warn(e));
+    // Solo info de cuenta, no necesitamos Spotify aquí por ahora según solicitud
   }, [])
 
   const displayName = user?.displayName || 'Usuario '
@@ -98,82 +81,47 @@ export default function Profile() {
           </div>
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-[1fr]">
-          <div className="space-y-4">
-            <article className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-5">
-              <div className="mb-4 inline-flex items-center gap-2 text-[#e5be85]">
-                <UilMusic size={16} />
-                <p className="text-xs uppercase tracking-[0.16em]">Reciente de Spotify</p>
+        <section className="grid gap-6 md:grid-cols-2">
+          <article className="rounded-3xl border border-white/12 bg-[#25252a]/70 p-6">
+            <h2 className="mb-4 font-display text-xl font-bold text-white">Detalles de la Cuenta</h2>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#67e8f9]">ID de Usuario</p>
+                <p className="mt-1 font-mono text-xs text-slate-300">{user?.userId || user?.id || 'N/A'}</p>
               </div>
-              <div className="space-y-2.5">
-                {realRecent.map((trackObj, idx) => {
-                   const track = trackObj?.track || trackObj;
-                   return (
-                  <div key={idx} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5">
-                    <span className="grid h-8 w-8 place-items-center rounded-xl bg-[#22d3ee]/35 text-[#fff8ef]">
-                      <UilMusic size={14} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-white">{track?.name || 'Unknown Track'}</p>
-                      <p className="text-xs text-slate-300/65">{track?.artists?.[0]?.name || 'Spotify Session'}</p>
-                    </div>
-                  </div>
-                )})}
-                {realRecent.length === 0 && <p className="text-sm text-slate-400">Aún no hay reproducciones recientes.</p>}
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#67e8f9]">Correo Electrónico</p>
+                <p className="mt-1 text-sm text-white">{user?.email || 'No proporcionado'}</p>
               </div>
-            </article>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#67e8f9]">Proveedor de Identidad</p>
+                <p className="mt-1 text-sm text-white">Spotify Social Auth</p>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#67e8f9]">Miembro desde</p>
+                <p className="mt-1 text-sm text-white">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Desconocido'}</p>
+              </div>
+            </div>
+          </article>
 
-            <article className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-5">
-              <div className="mb-4 inline-flex items-center gap-2 text-[#67e8f9]">
-                <UilFavorite size={16} />
-                <p className="text-xs uppercase tracking-[0.16em]">Tus favoritas (Top Spotify)</p>
+          <article className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-6">
+            <h2 className="mb-4 font-display text-xl font-bold text-white">Estadísticas MusicTwins</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-2xl bg-white/5 p-4">
+                <p className="text-2xl font-black text-white">100%</p>
+                <p className="text-[10px] uppercase tracking-widest text-slate-400">Match Score</p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {topTracks.map((track, idx) => (
-                  <div key={idx} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                    <img 
-                      src={track.imageUrl || '/song-placeholder.png'} 
-                      alt={track.name} 
-                      className="h-10 w-10 rounded-lg object-cover" 
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-white">{track.name}</p>
-                      <p className="truncate text-xs text-slate-300/65">{track.artist}</p>
-                    </div>
-                  </div>
-                ))}
-                {topTracks.length === 0 && <p className="text-sm text-slate-400">Sin datos de favoritos aún.</p>}
+              <div className="rounded-2xl bg-white/5 p-4">
+                <p className="text-2xl font-black text-white">Activo</p>
+                <p className="text-[10px] uppercase tracking-widest text-slate-400">Estado</p>
               </div>
-            </article>
-          </div>
-        </section>
-
-        <section className="rounded-3xl border border-white/12 bg-[#1f1f23]/70 p-5">
-          <div className="mb-3 inline-flex items-center gap-2 text-amber-200">
-            <UilBell size={16} />
-            <p className="text-xs uppercase tracking-[0.16em]">Configuracion</p>
-          </div>
-
-          <div className="divide-y divide-white/10">
-            <ToggleRow
-              label="Notificaciones de nuevos twins"
-              description="Recibe alertas cuando aparezcan coincidencias relevantes"
-              value={notifEnabled}
-              onChange={setNotifEnabled}
-            />
-            <ToggleRow
-              label="Compartir historial de escucha"
-              description="Tus amigos pueden ver tu actividad reciente"
-              value={shareEnabled}
-              onChange={setShareEnabled}
-            />
-            <ToggleRow
-              label="Perfil publico"
-              description="Cualquier usuario puede descubrir tu perfil musical"
-              value={publicProfile}
-              onChange={setPublicProfile}
-            />
-          </div>
+            </div>
+            <div className="mt-6 p-4 rounded-2xl border border-[#67e8f9]/20 bg-[#67e8f9]/5">
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Tu cuenta está vinculada correctamente. MusicTwins utiliza tus datos de escucha para conectarte con personas que comparten tu ADN musical.
+              </p>
+            </div>
+          </article>
         </section>
       </div>
     </AppShell>
