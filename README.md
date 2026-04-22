@@ -22,6 +22,9 @@ Frontend oficial de MusicTwins: una experiencia social musical construida sobre 
 - [Rutas De La App](#rutas-de-la-app)
 - [Flujo De Autenticacion](#flujo-de-autenticacion)
 - [Guia De Contribucion](#guia-de-contribucion)
+- [API Contract Por Modulo](#api-contract-por-modulo)
+- [Checklist De Release](#checklist-de-release)
+- [Plantilla De Pull Request](#plantilla-de-pull-request)
 - [Despliegue](#despliegue)
 
 ## Resumen
@@ -170,6 +173,69 @@ npm run build
 - Alcance (feature/bug/refactor).
 - Evidencia visual si hubo cambios de UI.
 
+## API Contract Por Modulo
+
+Este frontend consume APIs desde la capa `services` de cada feature.
+
+- Auth: login, perfil y sesión.
+- Feed: actividad, resumen de amigos, tendencias y now playing.
+- Messages: conversaciones, mensajes, marcar como leído.
+- Twin Match: red de amigos, solicitudes y búsqueda de usuarios.
+- Profile: datos de perfil y top tracks.
+
+Referencia de implementación:
+
+- `src/features/auth/services/`
+- `src/features/feed/services/`
+- `src/features/messages/services/`
+- `src/features/twin-match/services/`
+- `src/features/profile/services/`
+
+## Checklist De Release
+
+Antes de publicar una versión:
+
+1. Verificar variables de entorno de producción.
+2. Ejecutar build local sin errores.
+3. Validar rutas críticas: `/`, `/feed`, `/messages`, `/twin-match`, `/profile`.
+4. Revisar flujo de autenticación completo (`/` -> `/auth-loading` -> `/feed`).
+5. Confirmar que no se exponen endpoints internos ni secretos en documentación.
+6. Confirmar que el README y changelog reflejan los cambios.
+
+Comandos mínimos:
+
+```bash
+npm install
+npm run build
+npm run start
+```
+
+## Plantilla De Pull Request
+
+```md
+## Resumen
+-
+
+## Tipo de cambio
+- [ ] feat
+- [ ] fix
+- [ ] refactor
+- [ ] docs
+- [ ] chore
+
+## Alcance
+- Modulos afectados:
+- Rutas afectadas:
+
+## Evidencia
+- Capturas / videos:
+
+## Validacion
+- [ ] `npm run build` sin errores
+- [ ] Flujo de auth validado
+- [ ] No hay secretos ni endpoints internos en el diff
+```
+
 ## Despliegue
 
 El proyecto es compatible con cualquier plataforma que soporte Next.js (por ejemplo Vercel o infraestructura propia con Node).
@@ -179,12 +245,3 @@ Pasos mínimos:
 1. Configurar variables de entorno de producción.
 2. Ejecutar `npm run build`.
 3. Levantar con `npm run start`.
-
----
-
-Si necesitas, puedo dejar una versión extendida del README con:
-
-- sección de API contract por módulo,
-- checklist de release,
-- plantilla de Pull Request,
-- y `.env.example` listo para el repo.
