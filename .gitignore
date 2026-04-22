@@ -14,6 +14,7 @@ dist-ssr
 .turbo
 *.local
 /.github
+tsconfig.tsbuildinfo
 
 # Environment and secrets
 .env
